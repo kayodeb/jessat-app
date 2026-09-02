@@ -1,0 +1,58 @@
+import { CategoryItem } from '@/types/category'
+
+export const CATEGORIES: CategoryItem[] = [
+  {
+    id: 'cat-ordinateurs',
+    name: 'Ordinateurs',
+    slug: 'ordinateurs',
+    description: 'PC Gaming 4K, stations de travail IA, PC portables ultra-fins et tours sur-mesure.',
+    productCount: 18,
+    imageUrl: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80',
+    accentColor: '#38bdf8',
+  },
+  {
+    id: 'cat-claviers',
+    name: 'Claviers',
+    slug: 'claviers',
+    description: 'Claviers mécaniques Rapid Trigger, switches magnétiques et châssis usiné CNC.',
+    productCount: 14,
+    imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
+    accentColor: '#818cf8',
+  },
+  {
+    id: 'cat-souris',
+    name: 'Souris',
+    slug: 'souris',
+    description: 'Souris gaming ultra-légères, capteurs optiques 36K DPI et grip ergonomique.',
+    productCount: 12,
+    imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80',
+    accentColor: '#a855f7',
+  },
+  {
+    id: 'cat-imprimantes',
+    name: 'Imprimantes',
+    slug: 'imprimantes',
+    description: 'Imprimantes jet  laser couleur et multifonctions haute résolution.',
+    productCount: 9,
+    imageUrl: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=800&q=80',
+    accentColor: '#06b6d4',
+  },
+  {
+    id: 'cat-projecteurs',
+    name: 'Projecteurs',
+    slug: 'projecteurs',
+    description: 'Vidéoprojecteurs 4K laser, courte focale et projecteurs portables ultra-lumineux.',
+    productCount: 7,
+    imageUrl: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=800&q=80',
+    accentColor: '#ec4899',
+  },
+  {
+    id: 'cat-accessoires',
+    name: 'Accessoires',
+    slug: 'accessoires',
+    description: 'Tapis de souris XXL, casques Hi-Res, webcams 4K et hubs USB-C pro.',
+    productCount: 32,
+    imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+    accentColor: '#f97316',
+  },
+]
