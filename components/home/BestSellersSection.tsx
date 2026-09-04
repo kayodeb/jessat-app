@@ -38,10 +38,10 @@ export function BestSellersSection({ onQuickView }: BestSellersSectionProps) {
         <div className="flex items-end justify-between mb-10">
           <div>
             <div className="text-xs uppercase tracking-wider font-semibold text-amber-600 mb-1">
-              Plébiscité par la communauté des passionnés
+              Les Meilleurs ventes
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-950">
-              Conçus pour la Performance Absolue
+              Les produits les plus achetés par nos clients
             </h2>
           </div>
 

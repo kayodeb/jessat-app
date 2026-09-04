@@ -1,9 +1,10 @@
-﻿'use client'
+'use client'
 
 import React, { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { ArrowRight, Sparkles, Cpu, Zap, Star, ShieldCheck, Flame } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import Aurora from '@/components/Aurora'
 import { animateHeroEntrance, startSubtleFloatAnimation } from '@/lib/animations/hero'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
@@ -52,22 +53,37 @@ export function HeroSection({ onExploreClick, onConfiguratorClick }: HeroSection
   }, [prefersReduced])
 
   return (
-    <section className="relative min-h-[88vh] flex items-center pt-8 pb-16 overflow-hidden tech-grid-bg">
-      {/* React Bits inspired soft radial glows in background */}
-      <div className="pointer-events-none absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-blue-400/10 blur-[120px] -z-10" />
-      <div className="pointer-events-none absolute top-1/3 right-1/6 w-[450px] h-[450px] rounded-full bg-indigo-500/10 blur-[100px] -z-10" />
+    <section className="relative min-h-[90vh] flex items-center pt-8 pb-16 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {/* Aurora background */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        {/* <Aurora
+          colorStops={['#dbeafe', '#93c5fd', '#e0e7ff']}
+          amplitude={0.8}
+          blend={0.4}
+        /> */}
+      </div>
+
+      {/* Subtle grid overlay */}
+      <div
+        className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage:
+            'linear-gradient(#1d4ed8 1px,transparent 1px),linear-gradient(to right,#1d4ed8 1px,transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Typography & CTAs */}
           <div className="lg:col-span-6 space-y-8 z-10">
-            {/* Trending / Generation Badge */}
+            {/* Badge */}
             <div ref={badgeRef} className="inline-block" style={{ opacity: 0 }}>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900 text-white text-xs font-semibold tracking-wide shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 text-blue-400 animate-pulse" />
-                <span className="uppercase tracking-wider text-[11px]">Architecture Blackwell RTX 50 Series</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                <span className="text-zinc-300">Disponible Immédiatement</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600 text-white text-xs font-semibold tracking-wide shadow-lg shadow-blue-200">
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-100" />
+                <span className="uppercase tracking-wider text-[11px]">Large gamme &bull; Prix compétitifs</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-200" />
+                <span className="text-blue-100">Garantie incluse</span>
               </div>
             </div>
 
@@ -76,21 +92,21 @@ export function HeroSection({ onExploreClick, onConfiguratorClick }: HeroSection
               <h1
                 ref={titleRef}
                 style={{ opacity: 0 }}
-                className="text-4xl sm:text-6xl xl:text-7xl font-black text-zinc-950 tracking-tight leading-[1.05]"
+                className="text-4xl sm:text-6xl xl:text-7xl font-black text-blue-900 tracking-tight leading-[1.05]"
               >
-                PROPULSEZ VOS <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-950 via-zinc-800 to-blue-600">
-                  PERFORMANCES.
+                JESSAT <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-400">
+                   MULTISERVICES.
                 </span>
               </h1>
 
               <p
                 ref={subtitleRef}
                 style={{ opacity: 0 }}
-                className="text-base sm:text-lg text-zinc-600 max-w-lg leading-relaxed"
+                className="text-base sm:text-lg text-blue-800/70 max-w-lg leading-relaxed"
               >
-                Des machines sculptées pour performer. Architecture thermique sans compromis,
-                silence acoustique absolu et puissance brute pour le gaming 4K et la création assistée par IA.
+                Ordinateurs portables et PC de bureau, imprimantes, projecteurs, claviers, souris et
+                accessoires — tout ce dont vous avez besoin, au meilleur prix.
               </p>
             </div>
 
@@ -104,52 +120,52 @@ export function HeroSection({ onExploreClick, onConfiguratorClick }: HeroSection
                 onClick={onExploreClick}
                 variant="primary"
                 size="lg"
-                className="gap-2 shadow-lg shadow-zinc-950/10 text-sm font-semibold group"
+                className="gap-2 shadow-lg shadow-blue-200/60 text-sm font-semibold group"
               >
-                <span>Découvrir les Ordinateurs</span>
+                <span>Voir nos Ordinateurs</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
 
-              <Button
+              {/* <Button
                 onClick={onConfiguratorClick}
                 variant="outline"
                 size="lg"
-                className="gap-2 text-sm font-semibold border-zinc-300 hover:border-zinc-900"
+                className="gap-2 text-sm font-semibold border-blue-200 hover:border-blue-500 text-blue-700"
               >
                 <Cpu className="w-4 h-4 text-blue-600" />
                 <span>Configurer mon PC</span>
-              </Button>
+              </Button> */}
             </div>
 
-            {/* Social Proof matching reference image */}
-            <div
+            {/* Social Proof */}
+            {/* <div
               ref={socialRef}
               style={{ opacity: 0 }}
-              className="flex items-center gap-4 pt-4 border-t border-zinc-200/80"
+              className="flex items-center gap-4 pt-4 border-t border-blue-100"
             >
               <div className="flex -space-x-2 overflow-hidden">
-                <div className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-zinc-200">
+                <div className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-blue-100">
                   <Image
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                    alt="Customer"
+                    alt="Client satisfait"
                     fill
                     className="object-cover"
                     sizes="32px"
                   />
                 </div>
-                <div className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-zinc-200">
+                <div className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-blue-100">
                   <Image
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
-                    alt="Customer"
+                    alt="Client satisfait"
                     fill
                     className="object-cover"
                     sizes="32px"
                   />
                 </div>
-                <div className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-zinc-200">
+                <div className="relative w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-blue-100">
                   <Image
                     src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80"
-                    alt="Customer"
+                    alt="Client satisfait"
                     fill
                     className="object-cover"
                     sizes="32px"
@@ -158,7 +174,7 @@ export function HeroSection({ onExploreClick, onConfiguratorClick }: HeroSection
               </div>
 
               <div className="text-xs">
-                <div className="flex items-center gap-1 text-zinc-900 font-bold">
+                <div className="flex items-center gap-1 text-blue-900 font-bold">
                   <div className="flex text-amber-400">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
@@ -166,98 +182,82 @@ export function HeroSection({ onExploreClick, onConfiguratorClick }: HeroSection
                   </div>
                   <span>4.9 / 5</span>
                 </div>
-                <span className="text-zinc-500 text-[11px]">
-                  Recommandé par +50 000 gamers et créateurs pro
+                <span className="text-blue-600/70 text-[11px]">
+                  Recommandé par +2 000 clients satisfaits
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
 
-          {/* Right Column: Hero Visual with Floating Hardware Specs */}
+          {/* Right Column: Hero Visual */}
           <div className="lg:col-span-6 relative flex items-center justify-center pt-8 lg:pt-0">
-            {/* Glowing Backdrop Mesh */}
+            {/* Glow */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-[340px] sm:w-[460px] h-[340px] sm:h-[460px] rounded-full bg-gradient-to-tr from-blue-500/20 via-indigo-400/15 to-transparent blur-3xl" />
+              <div className="w-[340px] sm:w-[460px] h-[340px] sm:h-[460px] rounded-full bg-gradient-to-tr from-blue-400/30 via-indigo-300/20 to-transparent blur-3xl" />
             </div>
 
-            {/* Central Masterpiece PC Frame */}
+            {/* Floating Laptop Image */}
             <div
               ref={imageContainerRef}
               style={{ opacity: 0 }}
-              className="relative w-full max-w-[500px] aspect-[4/4.5] rounded-3xl p-3 bg-white/40 backdrop-blur-md border border-white/80 shadow-2xl overflow-visible"
+              className="relative w-full max-w-[580px] overflow-visible"
             >
-              <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-950 border border-zinc-800">
-                <Image
-                  src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=85"
-                  alt="AERO APEX ONE Flagship Rig"
-                  fill
-                  priority
-                  className="object-cover object-center scale-105"
-                  sizes="(max-width: 1024px) 100vw, 500px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+              <Image
+                src="/images/hero-laptops.png"
+                alt="Ordinateurs portables Jessat Multiservices"
+                width={1200}
+                height={900}
+                priority
+                className="w-full h-auto drop-shadow-2xl"
+                sizes="(max-width: 1024px) 100vw, 580px"
+                style={{
+                  filter: 'drop-shadow(0 25px 50px rgba(30, 64, 175, 0.25))',
+                  mixBlendMode: 'multiply',
+                }}
+              />
 
-                <div className="absolute bottom-5 inset-x-5 flex items-center justify-between text-white">
-                  <div>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-blue-400">
-                      Modèle Présenté
-                    </span>
-                    <h3 className="text-sm font-black tracking-tight">AERO APEX ONE EXTREME</h3>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-white border border-white/20">
-                    3 899 €
-                  </span>
-                </div>
-              </div>
-
-              {/* Floating Spec Chip 1: GPU */}
+              {/* Chip 1: Garantie */}
               <div
                 ref={floatingChip1Ref}
                 style={{ opacity: 0 }}
-                className="absolute -top-4 -left-3 sm:-left-6 p-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-zinc-200/80 shadow-xl flex items-center gap-3 z-20"
+                className="absolute -top-4 -left-3 sm:-left-6 p-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-blue-100 shadow-xl flex items-center gap-3 z-20"
               >
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                  <Zap className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">
-                    Architecture Graphique
-                  </div>
-                  <div className="text-xs font-bold text-zinc-950">RTX 5090 24 Go GDDR7</div>
+                  <div className="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Garantie</div>
+                  <div className="text-xs font-bold text-blue-900">2 ans constructeur</div>
                 </div>
               </div>
 
-              {/* Floating Spec Chip 2: CPU */}
+              {/* Chip 2: Large gamme */}
               <div
                 ref={floatingChip2Ref}
                 style={{ opacity: 0 }}
-                className="absolute top-1/2 -right-3 sm:-right-8 p-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-zinc-200/80 shadow-xl flex items-center gap-3 z-20"
+                className="absolute top-1/2 -right-3 sm:-right-8 p-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-blue-100 shadow-xl flex items-center gap-3 z-20"
               >
-                <div className="w-10 h-10 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold">
-                  <Cpu className="w-5 h-5 text-amber-400" />
+                <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
+                  <Cpu className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">
-                    Processeur Gaming
-                  </div>
-                  <div className="text-xs font-bold text-zinc-950">Ryzen 7 9800X3D</div>
+                  <div className="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Large gamme</div>
+                  <div className="text-xs font-bold text-blue-900">+200 références</div>
                 </div>
               </div>
 
-              {/* Floating Spec Chip 3: Performance */}
+              {/* Chip 3: Meilleure vente */}
               <div
                 ref={floatingChip3Ref}
                 style={{ opacity: 0 }}
-                className="absolute -bottom-4 left-6 sm:left-10 p-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-zinc-200/80 shadow-xl flex items-center gap-3 z-20"
+                className="absolute -bottom-4 left-6 sm:left-10 p-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-blue-100 shadow-xl flex items-center gap-3 z-20"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                  <Flame className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center">
+                  <Star className="w-5 h-5 fill-amber-400" />
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">
-                    Fluidité Constatée en 4K
-                  </div>
-                  <div className="text-xs font-bold text-zinc-950">144+ FPS avec Ray Tracing</div>
+                  <div className="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Meilleure vente</div>
+                  <div className="text-xs font-bold text-blue-900">Livraison offerte</div>
                 </div>
               </div>
             </div>

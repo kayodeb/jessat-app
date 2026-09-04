@@ -44,7 +44,7 @@ export interface Product {
   description: string
   price: number
   compareAtPrice?: number
-  badge?: 'Nouveau' | 'Bestseller' | 'N°1 des Ventes' | 'Meilleure Vente' | 'Promo -15%' | 'Promo -20%' | 'Édition Limitée' | 'Édition Spéciale'
+  badge?: 'Bestseller' | 'Promo'
   isNew?: boolean
   isBestseller?: boolean
   rating: number
@@ -53,6 +53,7 @@ export interface Product {
   images: string[]
   specifications: ProductSpecification
   benchmarks?: ProductBenchmark
+  condition?: 'neuf' | 'venu'
   inStock: boolean
   stockCount: number
   featured?: boolean

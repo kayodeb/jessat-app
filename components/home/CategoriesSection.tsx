@@ -18,10 +18,10 @@ export function CategoriesSection({ onSelectCategory }: CategoriesSectionProps) 
         <div className="flex items-end justify-between mb-10">
           <div>
             <div className="text-xs uppercase tracking-wider font-semibold text-blue-600 mb-1">
-              Architecture & Écosystème
+           Catégories
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-950">
-              Explorer Notre Écosystème
+              Explorer Nos différentes catégories 
             </h2>
           </div>
 

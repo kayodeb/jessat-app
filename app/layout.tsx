@@ -15,16 +15,18 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'AERO RIGS | Boutique Informatique Haut de Gamme & PC Sur-Mesure',
+  title: 'Jessat Multi Services | Ordinateurs Neufs & Occasion, Accessoires à Abomey-Calavi (Bénin)',
   description:
-    'Concepteur de machines informatiques de pointe. PC Gaming 4K, Workstations IA, Laptops OLED et composants haute fidélité. Configurateur en direct avec pièces garanties 3 ans.',
+    'Jessat Multi Services — Carrefour Zogbadjè, Abomey-Calavi, Bénin. Spécialiste de la vente d\'ordinateurs neufs et d\'occasion, imprimantes, projecteurs, claviers, souris et accessoires informatiques. Livraison tout le Bénin.',
   keywords: [
-    'PC Gaming',
-    'RTX 5090',
-    'Ryzen 7 9800X3D',
-    'Ordinateur sur mesure',
-    'Boutique informatique haut de gamme',
-    'Workstation IA',
+    'Jessat Multi Services',
+    'ordinateurs portables Abomey-Calavi',
+    'ordinateurs occasion Bénin',
+    'PC portables neufs Cotonou',
+    'accessoires informatiques Bénin',
+    'Carrefour Zogbadjè Calavi',
+    'imprimantes Bénin',
+    'boutique informatique Abomey-Calavi',
   ],
 }
 

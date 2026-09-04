@@ -1,6 +1,6 @@
 export function cn(...classes: (string | undefined | null | false | Record<string, boolean>)[]) {
   const result: string[] = []
-  
+
   for (const item of classes) {
     if (!item) continue
     if (typeof item === 'string') {
@@ -11,14 +11,13 @@ export function cn(...classes: (string | undefined | null | false | Record<strin
       }
     }
   }
-  
+
   return result.join(' ')
 }
 
 export function formatPrice(amount: number): string {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
+  const formatted = new Intl.NumberFormat('fr-FR', {
     maximumFractionDigits: 0,
-  }).format(amount)
+  }).format(Math.round(amount))
+  return `${formatted} FCFA`
 }

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState, use } from 'react'
 import Image from 'next/image'
@@ -23,7 +23,7 @@ import {
   Sliders,
 } from 'lucide-react'
 import { PRODUCTS } from '@/data/products'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, cn } from '@/lib/utils'
 import { useCart } from '@/lib/context/cart-context'
 import { useWishlist } from '@/lib/context/wishlist-context'
 import { Navbar } from '@/components/layout/Navbar'
@@ -115,14 +115,12 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
               {/* Badge */}
               <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
-                {product.badge && (
-                  <Badge variant="electric" className="shadow-sm">
+                {product.badge && (product.badge === 'Bestseller' || product.badge === 'Promo') && (
+                  <Badge
+                    variant={product.badge === 'Bestseller' ? 'bestseller' : 'promo'}
+                    className="shadow-sm"
+                  >
                     {product.badge}
-                  </Badge>
-                )}
-                {savings > 0 && (
-                  <Badge variant="bestseller" className="shadow-sm">
-                    Économisez {formatPrice(savings)}
                   </Badge>
                 )}
               </div>
@@ -226,7 +224,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </span>
               </div>
               <p className="text-xs text-zinc-500">
-                TVA de 20% incluse • Livraison express gratuite dès 150 € • Possibilité de régler en 3x ou 4x sans frais
+                TVA de 20% incluse • Livraison express gratuite dès 50 000 FCFA • Possibilité de régler en 3x ou 4x sans frais
               </p>
             </div>
 
@@ -351,6 +349,27 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     </>
                   )}
                 </Button>
+
+                {/* Wishlist Button */}
+                <button
+                  type="button"
+                  onClick={() => toggleWishlist(product.id)}
+                  className={cn(
+                    'w-12 h-12 rounded-xl border flex items-center justify-center transition-all',
+                    isInWishlist(product.id)
+                      ? 'bg-rose-50 border-rose-200 text-rose-600 shadow-xs'
+                      : 'border-zinc-300 bg-white text-zinc-600 hover:border-zinc-950 hover:text-zinc-950'
+                  )}
+                  title={isInWishlist(product.id) ? 'Retirer de ma liste d\'envies' : 'Ajouter à ma liste d\'envies'}
+                  aria-label={isInWishlist(product.id) ? 'Retirer de ma liste d\'envies' : 'Ajouter à ma liste d\'envies'}
+                >
+                  <Heart
+                    className={cn(
+                      'w-5 h-5 transition-transform active:scale-125',
+                      isInWishlist(product.id) && 'fill-rose-500 text-rose-500'
+                    )}
+                  />
+                </button>
               </div>
 
               <Link href="/#configurator" className="block">

@@ -39,7 +39,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#fafafa]">
       {/* Top Banner & Header */}
-      <AnnouncementBar />
+      {/* <AnnouncementBar /> */}
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
 
       {/* Main Content Sections */}
@@ -57,7 +57,7 @@ export default function HomePage() {
         <CategoriesSection onSelectCategory={handleCategorySelect} />
 
         {/* 4. Section Ordinateurs avec style PC Frame */}
-        <OrdinateursSection />
+        {/* <OrdinateursSection /> */}
 
         {/* 5. New Arrivals & Hardware Catalogue */}
         <FeaturedProductsSection
@@ -66,7 +66,7 @@ export default function HomePage() {
         />
 
         {/* 5. Interactive PC Builder */}
-        <ConfiguratorSection />
+        {/* <ConfiguratorSection /> */}
 
         {/* 6. Bestsellers Showcase */}
         <BestSellersSection onQuickView={(product) => setQuickViewProduct(product)} />

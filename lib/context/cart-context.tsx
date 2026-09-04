@@ -52,7 +52,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               price: 3899,
               rating: 4.9,
               reviewCount: 148,
-              category: 'gaming-pc',
+              category: 'ordinateurs',
               images: ['https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80'],
               specifications: {
                 cpu: 'Ryzen 7 9800X3D',

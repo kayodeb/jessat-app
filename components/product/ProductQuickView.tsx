@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState } from 'react'
 import Image from 'next/image'
@@ -60,9 +60,11 @@ export function ProductQuickView({ product, onClose }: ProductQuickViewProps) {
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
-              {product.badge && (
+              {product.badge && (product.badge === 'Bestseller' || product.badge === 'Promo') && (
                 <div className="absolute top-4 left-4">
-                  <Badge variant="electric">{product.badge}</Badge>
+                  <Badge variant={product.badge === 'Bestseller' ? 'bestseller' : 'promo'}>
+                    {product.badge}
+                  </Badge>
                 </div>
               )}
             </div>

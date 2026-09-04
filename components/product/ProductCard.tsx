@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState } from 'react'
 import Image from 'next/image'
@@ -71,18 +71,15 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10 pointer-events-none">
-          {product.badge && (
-            <Badge
-              variant={
-                product.badge === 'Bestseller' || product.badge === 'N°1 des Ventes' || product.badge === 'Meilleure Vente'
-                  ? 'bestseller'
-                  : product.badge === 'Nouveau'
-                  ? 'new'
-                  : 'electric'
-              }
-            >
+          {product.badge && (product.badge === 'Bestseller' || product.badge === 'Promo') && (
+            <Badge variant={product.badge === 'Bestseller' ? 'bestseller' : 'promo'}>
               {product.badge}
             </Badge>
+          )}
+          {product.condition === 'venu' && (
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shadow-sm text-white bg-amber-600">
+              Venu
+            </span>
           )}
         </div>
 
@@ -182,10 +179,6 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
                 </span>
               )}
             </div>
-            <span className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              En stock • Expédié 24h
-            </span>
           </div>
 
           {/* Quick Add to cart button */}

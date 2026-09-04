@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React from 'react'
 import { Truck, Sparkles, ShieldCheck } from 'lucide-react'
@@ -10,7 +10,7 @@ export function AnnouncementBar() {
         {/* Left message */}
         <div className="hidden sm:flex items-center gap-2">
           <Truck className="w-3.5 h-3.5 text-blue-400" />
-          <span>Livraison Express Sécurisée 24/48h Offerte dès 150 €</span>
+          <span>Livraison Express Sécurisée 24/48h Offerte dès 50 000 FCFA</span>
         </div>
 
         {/* Center sale badge */}

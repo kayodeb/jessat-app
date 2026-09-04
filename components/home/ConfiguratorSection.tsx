@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState, useMemo } from 'react'
 import Image from 'next/image'
@@ -79,7 +79,7 @@ export function ConfiguratorSection() {
       price: totalPrice,
       rating: 5.0,
       reviewCount: 1,
-      category: 'gaming-pc' as const,
+      category: 'ordinateurs' as const,
       images: ['https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=85'],
       specifications: {
         cpu: selectedCpu.name,
@@ -293,11 +293,11 @@ export function ConfiguratorSection() {
                 <div>
                   <span className="text-xs text-zinc-400 block font-medium">Prix Total Configuration TTC</span>
                   <span className="text-3xl font-black tracking-tight text-white">
-                    <AnimatedCounter value={totalPrice} suffix=" €" />
+                    <AnimatedCounter value={totalPrice} suffix=" FCFA" />
                   </span>
                 </div>
                 <span className="text-xs text-zinc-400">
-                  ou dès <strong className="text-white">{Math.round(totalPrice / 4)} € / mois</strong> en 4x
+                  ou dès <strong className="text-white">{formatPrice(Math.round(totalPrice / 4))} / mois</strong> en 4x
                 </span>
               </div>
 

@@ -1,7 +1,8 @@
-﻿'use client'
+'use client'
 
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Truck } from 'lucide-react'
 import { useCart } from '@/lib/context/cart-context'
 import { formatPrice } from '@/lib/utils'
@@ -178,20 +179,34 @@ export function CartDrawer() {
                 <div className="pt-2 border-t border-zinc-200 flex items-center justify-between text-sm font-bold text-zinc-950">
                   <span>Total TTC</span>
                   <span className="text-base text-zinc-950">
-                    <AnimatedCounter value={subtotal} suffix=" €" />
+                    <AnimatedCounter value={subtotal} suffix=" FCFA" />
                   </span>
                 </div>
               </div>
 
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-full flex items-center justify-center gap-2"
-                onClick={() => alert('Paiement sécurisé simulé. Votre commande a été reçue !')}
-              >
-                <span>Commander ({totalItems})</span>
-                <ArrowRight className="w-4 h-4" />
-              </Button>
+              <div className="space-y-2">
+                <Link href="/checkout" onClick={closeCart} className="block w-full">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="w-full flex items-center justify-center gap-2 font-bold text-xs py-3"
+                  >
+                    <span>Passer au paiement ({formatPrice(subtotal)})</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+
+                <Link href="/panier" onClick={closeCart} className="block w-full">
+                  <Button
+                    variant="outline"
+                    size="md"
+                    className="w-full flex items-center justify-center gap-2 text-xs font-semibold text-zinc-700 hover:text-zinc-950 border-zinc-200 hover:bg-zinc-100"
+                  >
+                    <ShoppingBag className="w-4 h-4 text-blue-600" />
+                    <span>Voir tout le panier ({totalItems})</span>
+                  </Button>
+                </Link>
+              </div>
 
               <div className="flex items-center justify-center gap-4 text-[11px] text-zinc-500 pt-1">
                 <span className="flex items-center gap-1">
