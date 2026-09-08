@@ -16,15 +16,9 @@ import {
   HelpCircle,
   ExternalLink,
 } from 'lucide-react'
-import { Navbar } from '@/components/layout/Navbar'
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
-import { Footer } from '@/components/layout/Footer'
-import { CartDrawer } from '@/components/layout/CartDrawer'
-import { SearchModal } from '@/components/layout/SearchModal'
 import { Button } from '@/components/ui/Button'
 
 export default function ContactPage() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -58,10 +52,10 @@ export default function ContactPage() {
     },
     {
       q: 'Proposez-vous des ordinateurs d\'occasion et neufs ?',
-      a: 'Oui, absolument ! Nous disposons d\'un large parc d\'ordinateurs portables et de bureau neufs scellés ainsi que d\'ordinateurs reconditionnés de qualité professionnelle, minutieusement testés avec garantie.',
+      a: 'Oui, nous proposons une large sélection de PC portables et fixes neufs scellés ainsi que des modèles reconditionnés d\'occasion de grade A+, entièrement révisés et garantis.',
     },
     {
-      q: 'Quels sont les modes de paiement acceptés ?',
+      q: 'Quels sont les modes de règlement disponibles ?',
       a: 'Nous acceptons les paiements en FCFA par Mobile Money (MTN MoMo, Moov Money), virement bancaire et espèces en magasin à la livraison.',
     },
     {
@@ -71,19 +65,15 @@ export default function ContactPage() {
   ]
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa]">
-      <AnnouncementBar />
-      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-6">
-          <Link href="/" className="hover:text-zinc-950 transition-colors">
-            Accueil
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-zinc-950 font-semibold">Contact & Accès</span>
-        </nav>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-6">
+        <Link href="/" className="hover:text-zinc-950 transition-colors">
+          Accueil
+        </Link>
+        <ChevronRight className="w-3.5 h-3.5" />
+        <span className="text-zinc-950 font-semibold">Contact &amp; Accès</span>
+      </nav>
 
         {/* Header */}
         <div className="mb-10 text-center max-w-2xl mx-auto">
@@ -418,11 +408,6 @@ export default function ContactPage() {
             ))}
           </div>
         </section>
-      </main>
-
-      <Footer />
-      <CartDrawer />
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   )
 }

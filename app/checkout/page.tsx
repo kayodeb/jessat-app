@@ -22,16 +22,10 @@ import {
 } from 'lucide-react'
 import { useCart } from '@/lib/context/cart-context'
 import { formatPrice } from '@/lib/utils'
-import { Navbar } from '@/components/layout/Navbar'
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
-import { Footer } from '@/components/layout/Footer'
-import { CartDrawer } from '@/components/layout/CartDrawer'
-import { SearchModal } from '@/components/layout/SearchModal'
 import { Button } from '@/components/ui/Button'
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter'
 
 export default function CheckoutPage() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { items, clearCart, subtotal, totalItems } = useCart()
 
   // Checkout Form State
@@ -118,11 +112,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa]">
-      <AnnouncementBar />
-      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-6">
           <Link href="/" className="hover:text-zinc-950 transition-colors">
@@ -497,11 +488,6 @@ export default function CheckoutPage() {
             </div>
           </div>
         )}
-      </main>
-
-      <Footer />
-      <CartDrawer />
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   )
 }

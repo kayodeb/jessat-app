@@ -26,11 +26,6 @@ import { PRODUCTS } from '@/data/products'
 import { formatPrice, cn } from '@/lib/utils'
 import { useCart } from '@/lib/context/cart-context'
 import { useWishlist } from '@/lib/context/wishlist-context'
-import { Navbar } from '@/components/layout/Navbar'
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
-import { Footer } from '@/components/layout/Footer'
-import { CartDrawer } from '@/components/layout/CartDrawer'
-import { SearchModal } from '@/components/layout/SearchModal'
 import { ProductCard } from '@/components/product/ProductCard'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
@@ -51,7 +46,6 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isAdded, setIsAdded] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
 
   if (!product) {
@@ -80,11 +74,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const savings = product.compareAtPrice ? product.compareAtPrice - product.price : 0
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa]">
-      <AnnouncementBar />
-      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
-
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Fil d'Ariane (Breadcrumbs) */}
         <nav className="flex items-center gap-2 text-xs text-zinc-500 mb-8 overflow-x-auto whitespace-nowrap">
           <Link href="/" className="hover:text-zinc-950 transition-colors">
@@ -499,11 +489,6 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             ))}
           </div>
         </div>
-      </main>
-
-      <Footer />
-      <CartDrawer />
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   )
 }

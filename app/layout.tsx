@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { CartProvider } from '@/lib/context/cart-context'
 import { WishlistProvider } from '@/lib/context/wishlist-context'
+import { MainLayoutShell } from '@/components/layout/MainLayoutShell'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,6 +29,20 @@ export const metadata: Metadata = {
     'imprimantes Bénin',
     'boutique informatique Abomey-Calavi',
   ],
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/images/jessat-icon-transparent.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/images/jessat-icon.png' },
+    ],
+  },
+  openGraph: {
+    title: 'Jessat Multi Services | Votre partenaire en informatique',
+    description: 'Vente d\'ordinateurs neufs et d\'occasion, imprimantes et accessoires informatiques à Abomey-Calavi.',
+    images: [{ url: '/images/jessat-logo-blue.png', width: 260, height: 102, alt: 'Jessat Multi Services Logo' }],
+  },
 }
 
 export default function RootLayout({
@@ -43,7 +58,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#fafafa] text-zinc-950">
         <CartProvider>
           <WishlistProvider>
-            {children}
+            <MainLayoutShell>{children}</MainLayoutShell>
           </WishlistProvider>
         </CartProvider>
       </body>

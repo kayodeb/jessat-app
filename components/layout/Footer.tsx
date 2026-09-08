@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { Cpu, ArrowRight, ShieldCheck, Truck, RotateCcw, Headphones, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { Logo } from '@/components/ui/Logo'
 
 export function Footer() {
   const [email, setEmail] = useState('')
@@ -67,15 +68,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-14 border-b border-zinc-800/80">
           {/* Brand Info, Socials & Newsletter */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">
-                <Cpu className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-base font-extrabold tracking-tight text-white leading-none">Jessat</span>
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-blue-400">Multi Services</span>
-              </div>
-            </Link>
+            <Logo variant="full" theme="dark" href="/" size="md" />
             <p className="text-xs text-zinc-400 leading-relaxed max-w-sm">
               Jessat Multi Services — Carrefour Zogbadjè, Abomey-Calavi, Bénin.
               Spécialiste de la vente d'ordinateurs neufs et d'occasion, imprimantes et accessoires informatiques.
