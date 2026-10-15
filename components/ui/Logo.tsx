@@ -198,12 +198,12 @@ export function Logo({
   const content = (
     <div
       className={cn(
-        'inline-flex items-center gap-2.5 sm:gap-3 group select-none',
+        'inline-flex items-center gap-2 sm:gap-2.5 group select-none',
         containerBg,
         className
       )}
     >
-      {/* Icon Emblem */}
+      {/* Icon Emblem — always visible */}
       <div className="relative flex-shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
         <Image
           src="/images/jessat-icon-blue.png"
@@ -215,9 +215,9 @@ export function Logo({
         />
       </div>
 
-      {/* Text Branding */}
+      {/* Text Branding — hidden on xs, visible from sm */}
       {variant !== 'icon' && (
-        <div className="flex flex-col justify-center leading-none">
+        <div className="hidden sm:flex flex-col justify-center leading-none">
           <div className="flex items-baseline gap-1.5">
             <span
               className={cn(
@@ -243,7 +243,7 @@ export function Logo({
           {showSubtitle && variant === 'full' && (
             <span
               className={cn(
-                'font-medium italic tracking-normal mt-0.5 leading-tight opacity-90',
+                'hidden md:block font-medium italic tracking-normal mt-0.5 leading-tight opacity-90',
                 subSizeMap[size],
                 taglineColor
               )}

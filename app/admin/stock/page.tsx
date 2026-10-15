@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { AdminHeader } from '@/components/admin/admin-header'
 import { useAdminStore } from '@/lib/admin-store'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableHeader,
@@ -36,7 +37,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 
 export default function AdminStockPage() {
-  const { products, movements, adjustStock } = useAdminStore()
+  const { products, movements, isLoading, adjustStock } = useAdminStore()
 
   // Active view: 'inventory' or 'history'
   const [activeTab, setActiveTab] = useState<'inventory' | 'history'>('inventory')
@@ -199,7 +200,7 @@ export default function AdminStockPage() {
           <div className="flex flex-1 md:max-w-md items-center gap-2">
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
+              <Input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -208,7 +209,7 @@ export default function AdminStockPage() {
                     ? 'Rechercher un produit...'
                     : 'Rechercher dans l\'historique...'
                 }
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-900/20"
+                className="w-full bg-slate-50 border-slate-200 rounded-2xl pl-9 pr-3 py-1 text-xs text-slate-800 placeholder:text-slate-400"
               />
             </div>
 
@@ -274,7 +275,16 @@ export default function AdminStockPage() {
                 </TableHeader>
 
                 <TableBody>
-                  {paginatedProducts.length === 0 ? (
+                  {isLoading && products.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="py-20 text-center text-slate-500 text-xs">
+                        <div className="flex flex-col items-center justify-center gap-2.5">
+                          <div className="w-8 h-8 border-3 border-blue-900/20 border-t-blue-900 rounded-full animate-spin" />
+                          <span className="font-semibold text-slate-500">Chargement du stock...</span>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : paginatedProducts.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={4} className="py-16 text-center text-slate-400 text-xs">
                         Aucun produit ne correspond aux filtres de stock.
@@ -340,20 +350,20 @@ export default function AdminStockPage() {
                                   <option value="REMOVE">- Sortie (Ajustement)</option>
                                 </select>
 
-                                <input
+                                <Input
                                   type="number"
                                   min="1"
                                   value={quantityInput}
                                   onChange={(e) => setQuantityInput(Number(e.target.value))}
-                                  className="w-16 bg-white border border-slate-200 text-slate-900 rounded-xl px-2 py-1 text-xs font-bold text-center focus:outline-none"
+                                  className="w-16 h-8 px-2 py-1 text-xs font-bold text-center"
                                 />
 
-                                <input
+                                <Input
                                   type="text"
                                   value={reasonInput}
                                   onChange={(e) => setReasonInput(e.target.value)}
                                   placeholder="Motif"
-                                  className="w-32 bg-white border border-slate-200 text-slate-900 rounded-xl px-2 py-1 text-xs focus:outline-none"
+                                  className="w-32 h-8 px-2 py-1 text-xs"
                                 />
 
                                 <Button
@@ -417,18 +427,28 @@ export default function AdminStockPage() {
                 </TableHeader>
 
                 <TableBody>
-                  {paginatedMovements.length === 0 ? (
+                  {isLoading && movements.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="py-20 text-center text-slate-500 text-xs">
+                        <div className="flex flex-col items-center justify-center gap-2.5">
+                          <div className="w-8 h-8 border-3 border-blue-900/20 border-t-blue-900 rounded-full animate-spin" />
+                          <span className="font-semibold text-slate-500">Chargement des mouvements de stock...</span>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : paginatedMovements.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="py-16 text-center text-slate-400 text-xs">
                         Aucun mouvement de stock enregistré pour cette recherche.
                       </TableCell>
                     </TableRow>
                   ) : (
-                    paginatedMovements.map((mov) => {
-                      const isPositive = mov.changeQuantity > 0
+                    paginatedMovements.map((mov, idx) => {
+                      const qty = Number(mov.changeQuantity) || 0
+                      const isPositive = qty > 0
 
                       return (
-                        <TableRow key={mov.id} className="hover:bg-slate-50/80 transition-colors">
+                        <TableRow key={mov.id || `mov-row-${idx}`} className="hover:bg-slate-50/80 transition-colors">
                           <TableCell className="py-3 px-6 font-mono text-slate-500 text-xs">
                             {new Date(mov.createdAt).toLocaleString('fr-FR')}
                           </TableCell>
@@ -453,11 +473,11 @@ export default function AdminStockPage() {
                             >
                               {isPositive ? (
                                 <>
-                                  <ArrowUpRight className="w-3.5 h-3.5" /> +{mov.changeQuantity}
+                                  <ArrowUpRight className="w-3.5 h-3.5" /> +{qty}
                                 </>
                               ) : (
                                 <>
-                                  <ArrowDownRight className="w-3.5 h-3.5" /> {mov.changeQuantity}
+                                  <ArrowDownRight className="w-3.5 h-3.5" /> {qty}
                                 </>
                               )}
                             </span>

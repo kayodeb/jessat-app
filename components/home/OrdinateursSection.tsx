@@ -4,14 +4,15 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Cpu, Zap, Star, ShieldCheck, Gauge, ShoppingBag, Check } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { useProducts } from '@/hooks/useCatalog'
 import { formatPrice } from '@/lib/utils'
 import { useCart } from '@/lib/context/cart-context'
 import { Reveal } from '@/components/animations/Reveal'
 
-const ordinateurs = PRODUCTS.filter((p) => p.category === 'ordinateurs')
-
 export function OrdinateursSection() {
+  const { products } = useProducts({ category: 'ordinateurs' })
+  const ordinateurs = products.filter((p) => p.category === 'ordinateurs')
+
   const [activeIdx, setActiveIdx] = useState(0)
   const [isAdded, setIsAdded] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -21,13 +22,14 @@ export function OrdinateursSection() {
 
   // Rotation automatique toutes les 5s (sauf interaction utilisateur)
   useEffect(() => {
+    if (ordinateurs.length === 0) return
     intervalRef.current = setInterval(() => {
       setActiveIdx((prev) => (prev + 1) % ordinateurs.length)
     }, 5000)
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [])
+  }, [ordinateurs.length])
 
   const handleSelect = (idx: number) => {
     setActiveIdx(idx)

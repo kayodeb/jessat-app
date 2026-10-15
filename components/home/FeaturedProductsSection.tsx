@@ -1,9 +1,9 @@
-﻿'use client'
+'use client'
 
 import React from 'react'
 import Link from 'next/link'
 import { ArrowRight, Sparkles, ShoppingBag } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { useProducts } from '@/hooks/useCatalog'
 import { Product } from '@/types/product'
 import { ProductCard } from '@/components/product/ProductCard'
 import { Reveal } from '@/components/animations/Reveal'
@@ -16,8 +16,9 @@ interface FeaturedProductsSectionProps {
 export function FeaturedProductsSection({
   onQuickView,
 }: FeaturedProductsSectionProps) {
+  const { products } = useProducts()
   // Sélection de 8 produits phares pour la page d'accueil
-  const featuredProducts = PRODUCTS.slice(0, 8)
+  const featuredProducts = products.slice(0, 8)
 
   return (
     <section id="products" className="py-20 bg-white">

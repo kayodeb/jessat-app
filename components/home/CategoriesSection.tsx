@@ -1,9 +1,9 @@
-﻿'use client'
+'use client'
 
 import React from 'react'
 import Image from 'next/image'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
-import { CATEGORIES } from '@/data/categories'
+import { useCategories } from '@/hooks/useCatalog'
 import { Reveal } from '@/components/animations/Reveal'
 
 interface CategoriesSectionProps {
@@ -11,6 +11,8 @@ interface CategoriesSectionProps {
 }
 
 export function CategoriesSection({ onSelectCategory }: CategoriesSectionProps) {
+  const { categories } = useCategories()
+
   return (
     <section id="categories" className="py-20 bg-zinc-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,7 +38,7 @@ export function CategoriesSection({ onSelectCategory }: CategoriesSectionProps) 
 
         {/* 6 Category Cards Grid matching reference */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CATEGORIES.map((cat, idx) => (
+          {categories.map((cat, idx) => (
             <Reveal key={cat.id} delay={idx * 80}>
               <div
                 onClick={() => onSelectCategory?.(cat.slug)}

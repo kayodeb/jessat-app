@@ -17,6 +17,7 @@ import {
   ExternalLink,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/input'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -134,13 +135,12 @@ export default function ContactPage() {
                     <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                       Nom &amp; Prénom <span className="text-rose-500">*</span>
                     </label>
-                    <input
+                    <Input
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Ex: Jean Houndé"
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-zinc-200 bg-zinc-50/50 focus:bg-white focus:border-blue-600 outline-none transition-colors"
                     />
                   </div>
 
@@ -148,13 +148,12 @@ export default function ContactPage() {
                     <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                       Téléphone / WhatsApp <span className="text-rose-500">*</span>
                     </label>
-                    <input
+                    <Input
                       type="tel"
                       required
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+229 97 00 00 00"
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-zinc-200 bg-zinc-50/50 focus:bg-white focus:border-blue-600 outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -164,12 +163,11 @@ export default function ContactPage() {
                     <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                       Adresse Email
                     </label>
-                    <input
+                    <Input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="votre.email@exemple.com"
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-zinc-200 bg-zinc-50/50 focus:bg-white focus:border-blue-600 outline-none transition-colors"
                     />
                   </div>
 

@@ -16,8 +16,11 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { AdminHeader } from '@/components/admin/admin-header'
+import { AdminDashboardSkeleton } from '@/components/admin/admin-dashboard-skeleton'
 import { useAdminStore } from '@/lib/admin-store'
 import { ProductFormModal } from '@/components/admin/product-form-modal'
+import { Input } from '@/components/ui/input'
+import { formatPrice } from '@/lib/utils'
 
 export default function AdminDashboardPage() {
   const {
@@ -25,6 +28,9 @@ export default function AdminDashboardPage() {
     categories,
     promotions,
     movements,
+    orders,
+    stats,
+    isLoading,
     addProduct,
     adjustStock,
   } = useAdminStore()
@@ -33,13 +39,14 @@ export default function AdminDashboardPage() {
   const [restockProductId, setRestockProductId] = useState<string | null>(null)
   const [restockQty, setRestockQty] = useState<number>(10)
 
-  // Calculated Metrics
-  const totalProducts = products.length
+  // Calculated Metrics (using backend stats when available)
+  const totalProducts = stats?.totalProducts ?? products.length
   const totalStockValue = products.reduce(
     (acc, p) => acc + p.price * p.stockCount,
     0
   )
   const lowStockProducts = products.filter((p) => p.stockCount <= 5)
+  const lowStockCount = stats?.lowStockProducts ?? lowStockProducts.length
   const activePromotions = promotions.filter((p) => p.isActive)
 
   const handleQuickRestock = (productId: string) => {
@@ -66,28 +73,32 @@ export default function AdminDashboardPage() {
       />
 
       <main className="flex-1 overflow-y-auto space-y-6 max-w-7xl w-full mx-auto pr-2 pb-12">
-        {/* TOP ROW: 4 DealDeck Metric Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {/* Card 1: PRIMARY BLUE 900 HERO CARD (Valeur du Stock) */}
+        {isLoading && products.length === 0 ? (
+          <AdminDashboardSkeleton />
+        ) : (
+          <>
+            {/* TOP ROW: 4 DealDeck Metric Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Card 1: PRIMARY BLUE 900 HERO CARD (Chiffre d'affaires / Valeur Stock en FCFA) */}
           <div className="bg-blue-900 text-white rounded-3xl p-6 shadow-sm border border-blue-950 relative overflow-hidden flex flex-col justify-between h-44">
             <div className="flex items-center justify-between">
               <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white">
                 <DollarSign className="w-5 h-5" />
               </div>
               <span className="bg-emerald-400/20 backdrop-blur-md text-emerald-300 font-extrabold text-xs px-2.5 py-1 rounded-full border border-emerald-300/30 flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" /> +12.4%
+                En direct
               </span>
             </div>
 
             <div>
               <span className="text-xs text-blue-200 font-medium block">
-                Valeur Totale du Stock
+                {stats?.totalRevenue ? "Chiffre d'Affaires Réalisé" : 'Valeur Totale du Stock'}
               </span>
-              <div className="text-3xl font-black tracking-tight mt-1">
-                {totalStockValue.toLocaleString('fr-FR')} €
+              <div className="text-2xl sm:text-3xl font-black tracking-tight mt-1 truncate">
+                {formatPrice(stats?.totalRevenue ?? totalStockValue)}
               </div>
               <span className="text-[11px] text-blue-200/80 block mt-1">
-                Valeur estimée du catalogue actuel
+                {stats?.totalOrders ? `${stats.totalOrders} commandes traitées` : 'Valeur estimée du catalogue actuel'}
               </span>
             </div>
           </div>
@@ -98,8 +109,8 @@ export default function AdminDashboardPage() {
               <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-700">
                 <Package className="w-5 h-5" />
               </div>
-              <span className="bg-emerald-100 text-emerald-700 font-extrabold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" /> +5.2%
+              <span className="bg-slate-100 text-slate-700 font-extrabold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
+                Catalogue
               </span>
             </div>
 
@@ -123,7 +134,7 @@ export default function AdminDashboardPage() {
                 <AlertTriangle className="w-5 h-5" />
               </div>
               <span className="bg-rose-100 text-rose-700 font-extrabold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
-                <TrendingDown className="w-3 h-3" /> Urgent
+                {lowStockCount > 0 ? 'À réapprovisionner' : 'Stock OK'}
               </span>
             </div>
 
@@ -132,7 +143,7 @@ export default function AdminDashboardPage() {
                 Alertes Stock Faible
               </span>
               <div className="text-3xl font-black text-slate-900 tracking-tight mt-1">
-                {lowStockProducts.length}
+                {lowStockCount}
               </div>
               <span className="text-[11px] text-rose-500 font-semibold block mt-1">
                 Produits ≤ 5 en stock
@@ -140,26 +151,28 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Card 4: White Card (Promotions Actives) */}
+          {/* Card 4: White Card (Promotions Actives ou Utilisateurs) */}
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between h-44 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
                 <Tag className="w-5 h-5" />
               </div>
-              <span className="bg-emerald-100 text-emerald-700 font-extrabold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" /> Actif
+              <span className="bg-purple-100 text-purple-700 font-extrabold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
+                Actif
               </span>
             </div>
 
             <div>
               <span className="text-xs text-slate-400 font-semibold block">
-                Promotions Actives
+                {stats?.totalUsers !== undefined ? 'Utilisateurs Inscrits' : 'Promotions Actives'}
               </span>
               <div className="text-3xl font-black text-slate-900 tracking-tight mt-1">
-                {activePromotions.length}
+                {stats?.totalUsers ?? activePromotions.length}
               </div>
               <span className="text-[11px] text-slate-400 block mt-1">
-                {promotions.length} codes configurés au total
+                {stats?.pendingOrders !== undefined
+                  ? `${stats.pendingOrders} commande(s) en attente`
+                  : `${promotions.length} codes configurés au total`}
               </span>
             </div>
           </div>
@@ -209,58 +222,77 @@ export default function AdminDashboardPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Visual Inventory Activity Chart Box */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
                     Activité & Flux du Stock
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Aperçu mensuel du réassort et des ventes
+                    Suivi en temps réel des entrées (réassorts) et sorties (ventes)
                   </p>
                 </div>
                 <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-medium text-slate-600">
-                  <span>Cette année</span>
-                  <ChevronDown className="w-3.5 h-3.5" />
+                  <span>{movements.length} mouvement(s)</span>
                 </div>
               </div>
 
-              {/* Bar Chart Visualizer matching DealDeck */}
-              <div className="h-48 flex items-end justify-between gap-3 pt-6 px-4">
-                {[
-                  { month: 'Jan', v1: 30, v2: 60 },
-                  { month: 'Fév', v1: 75, v2: 40 },
-                  { month: 'Mar', v1: 45, v2: 85 },
-                  { month: 'Avr', v1: 90, v2: 50 },
-                  { month: 'Mai', v1: 65, v2: 95 },
-                  { month: 'Juin', v1: 80, v2: 60 },
-                  { month: 'Juil', v1: 55, v2: 70 },
-                ].map((item, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                    <div className="w-full flex items-end justify-center gap-1.5 h-full">
-                      <div
-                        className="w-3.5 bg-blue-900 rounded-t-lg transition-all duration-300 hover:brightness-110"
-                        style={{ height: `${item.v1}%` }}
-                      />
-                      <div
-                        className="w-3.5 bg-slate-200 rounded-t-lg transition-all duration-300 hover:bg-slate-300"
-                        style={{ height: `${item.v2}%` }}
-                      />
+              {movements.length === 0 ? (
+                <div className="h-44 flex flex-col items-center justify-center text-center p-6 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 my-2">
+                  <Boxes className="w-8 h-8 text-slate-300 mb-2" />
+                  <p className="text-xs font-bold text-slate-700">Aucun flux de stock pour le moment</p>
+                  <p className="text-[11px] text-slate-400 mt-1 max-w-sm">
+                    Les flux d'entrées et sorties s'enregistreront automatiquement lors des réassorts et des commandes clients.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3 pt-2">
+                  <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200/60 text-xs">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center font-bold">
+                        {movements.filter((m) => m.changeQuantity > 0 || m.type === 'RESTOCK').length}
+                      </div>
+                      <div>
+                        <span className="font-bold text-slate-800 block">Réassorts (Entrées)</span>
+                        <span className="text-[11px] text-slate-400">Opérations d'approvisionnement</span>
+                      </div>
                     </div>
-                    <span className="text-[10px] font-bold text-slate-400">{item.month}</span>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-slate-200 text-slate-800 flex items-center justify-center font-bold">
+                        {movements.filter((m) => m.changeQuantity < 0 || m.type === 'SALE').length}
+                      </div>
+                      <div>
+                        <span className="font-bold text-slate-800 block">Sorties & Ventes</span>
+                        <span className="text-[11px] text-slate-400">Commandes expédiées</span>
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
 
-              <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-slate-100 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-blue-900" />
-                  <span className="text-slate-600 font-medium">Réassort (Entrées)</span>
+                  <div className="divide-y divide-slate-100 max-h-36 overflow-y-auto">
+                    {movements.slice(0, 3).map((mov, idx) => (
+                      <div key={mov.id || `mov-top-${idx}`} className="py-2.5 flex items-center justify-between text-xs">
+                        <span className="font-semibold text-slate-800 truncate max-w-[240px]">
+                          {mov.productName}
+                        </span>
+                        {(() => {
+                          const qty = Number(mov.changeQuantity) || 0
+                          const isPositive = qty > 0
+                          return (
+                            <span
+                              className={`font-mono font-bold text-xs px-2 py-0.5 rounded-md ${
+                                isPositive
+                                  ? 'bg-emerald-50 text-emerald-700'
+                                  : 'bg-rose-50 text-rose-700'
+                              }`}
+                            >
+                              {isPositive ? `+${qty}` : `${qty}`}
+                            </span>
+                          )
+                        })()}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-slate-200" />
-                  <span className="text-slate-600 font-medium">Ventes (Sorties)</span>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Low Stock Table Panel */}
@@ -309,7 +341,7 @@ export default function AdminDashboardPage() {
                             {product.name}
                           </h4>
                           <p className="text-[10px] text-slate-400 capitalize">
-                            {product.category} • {product.price} €
+                            {product.category} • {formatPrice(product.price)}
                           </p>
                         </div>
                       </div>
@@ -321,12 +353,12 @@ export default function AdminDashboardPage() {
 
                         {restockProductId === product.id ? (
                           <div className="flex items-center gap-1">
-                            <input
+                            <Input
                               type="number"
                               min="1"
                               value={restockQty}
                               onChange={(e) => setRestockQty(Number(e.target.value))}
-                              className="w-14 bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-900"
+                              className="w-16 h-8 px-2 py-1 text-xs"
                             />
                             <button
                               onClick={() => handleQuickRestock(product.id)}
@@ -363,18 +395,18 @@ export default function AdminDashboardPage() {
                 <h3 className="text-sm font-bold text-slate-900">
                   Répartition du Catalogue
                 </h3>
-                <span className="text-xs text-slate-400 font-medium">Aujourd'hui</span>
+                <span className="text-xs text-slate-400 font-medium">Temps réel</span>
               </div>
 
-              {/* Circular Gauge / Donut Mock Representation */}
+              {/* Circular Gauge */}
               <div className="relative py-4 flex items-center justify-center">
-                <div className="w-36 h-36 rounded-full border-8 border-blue-900 border-t-slate-700 border-r-emerald-500 border-l-rose-400 flex items-center justify-center shadow-inner">
+                <div className="w-36 h-36 rounded-full border-8 border-blue-900 border-t-slate-700 border-r-emerald-500 border-l-amber-400 flex items-center justify-center shadow-inner">
                   <div className="text-center">
                     <span className="text-2xl font-black text-slate-900 block leading-tight">
                       {totalProducts}
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                      +5.34%
+                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                      Produits
                     </span>
                   </div>
                 </div>
@@ -382,22 +414,26 @@ export default function AdminDashboardPage() {
 
               {/* Category list items */}
               <div className="space-y-3 mt-4 pt-4 border-t border-slate-100">
-                {categoryStats.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: item.color }}
-                      />
-                      <span className="font-semibold text-slate-700 capitalize">
-                        {item.name}
+                {categoryStats.length === 0 ? (
+                  <p className="text-center text-xs text-slate-400 py-3">Aucune catégorie répertoriée</p>
+                ) : (
+                  categoryStats.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <span className="font-semibold text-slate-700 capitalize">
+                          {item.name}
+                        </span>
+                      </div>
+                      <span className="font-bold text-slate-900 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-200/60">
+                        {item.count} prods
                       </span>
                     </div>
-                    <span className="font-bold text-slate-900 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-200/60">
-                      {item.count} prods
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -414,29 +450,43 @@ export default function AdminDashboardPage() {
               </div>
 
               <div className="divide-y divide-slate-100 my-2">
-                {movements.slice(0, 4).map((mov) => (
-                  <div key={mov.id} className="py-3 flex items-center justify-between text-xs">
-                    <div>
-                      <h4 className="font-bold text-slate-800 line-clamp-1">
-                        {mov.productName}
-                      </h4>
-                      <p className="text-[10px] text-slate-400">{mov.reason}</p>
+                {movements.length === 0 ? (
+                  <p className="py-6 text-center text-xs text-slate-400">
+                    Aucun mouvement récent enregistré
+                  </p>
+                ) : (
+                  movements.slice(0, 4).map((mov, idx) => (
+                    <div key={mov.id || `mov-rec-${idx}`} className="py-3 flex items-center justify-between text-xs">
+                      <div>
+                        <h4 className="font-bold text-slate-800 line-clamp-1">
+                          {mov.productName}
+                        </h4>
+                        <p className="text-[10px] text-slate-400">{mov.reason || 'Mise à jour du stock'}</p>
+                      </div>
+                      {(() => {
+                        const qty = Number(mov.changeQuantity) || 0
+                        const isPositive = qty > 0
+                        return (
+                          <span
+                            className={`font-mono font-extrabold px-2 py-0.5 rounded-md ${
+                              isPositive
+                                ? 'bg-emerald-50 text-emerald-600'
+                                : 'bg-rose-50 text-rose-600'
+                            }`}
+                          >
+                            {isPositive ? `+${qty}` : `${qty}`}
+                          </span>
+                        )
+                      })()}
                     </div>
-                    <span
-                      className={`font-mono font-extrabold px-2 py-0.5 rounded-md ${
-                        mov.changeQuantity > 0
-                          ? 'bg-emerald-50 text-emerald-600'
-                          : 'bg-rose-50 text-rose-600'
-                      }`}
-                    >
-                      {mov.changeQuantity > 0 ? `+${mov.changeQuantity}` : mov.changeQuantity}
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
         </div>
+        </>
+        )}
 
         {/* Modal Form */}
         <ProductFormModal

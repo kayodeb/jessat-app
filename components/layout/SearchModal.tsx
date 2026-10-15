@@ -1,9 +1,10 @@
-﻿'use client'
+'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Search, X, Cpu, ArrowUpRight } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { Input } from '@/components/ui/input'
+import { useProducts } from '@/hooks/useCatalog'
 import { Product } from '@/types/product'
 import { formatPrice } from '@/lib/utils'
 import { useCart } from '@/lib/context/cart-context'
@@ -14,8 +15,9 @@ interface SearchModalProps {
 }
 
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {
+  const { products } = useProducts()
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState<Product[]>(PRODUCTS.slice(0, 4))
+  const [results, setResults] = useState<Product[]>(() => products.slice(0, 4))
   const inputRef = useRef<HTMLInputElement>(null)
   const { addToCart } = useCart()
 
@@ -47,12 +49,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   useEffect(() => {
     if (!query.trim()) {
-      setResults(PRODUCTS.slice(0, 4))
+      setResults(products.slice(0, 4))
       return
     }
 
     const q = query.toLowerCase()
-    const filtered = PRODUCTS.filter(
+    const filtered = products.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q) ||
@@ -61,7 +63,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         p.specifications.gpu?.toLowerCase().includes(q)
     )
     setResults(filtered)
-  }, [query])
+  }, [query, products])
 
   if (!isOpen) return null
 
@@ -78,13 +80,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         {/* Search Input Bar */}
         <div className="flex items-center px-5 py-4 border-b border-zinc-100 gap-3">
           <Search className="w-5 h-5 text-zinc-400" />
-          <input
+          <Input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Rechercher un modèle, processeur (Ryzen 9800X3D), RTX 5090..."
-            className="w-full text-sm sm:text-base outline-none text-zinc-900 placeholder:text-zinc-400 bg-transparent"
+            className="w-full text-sm sm:text-base border-0 focus-visible:ring-0 focus-visible:border-0 rounded-none px-0 py-0 shadow-none text-zinc-900 placeholder:text-zinc-400 bg-transparent"
           />
           {query && (
             <button

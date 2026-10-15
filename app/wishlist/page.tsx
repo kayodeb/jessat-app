@@ -12,7 +12,7 @@ import {
   PackageOpen,
   Check,
 } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { useProducts } from '@/hooks/useCatalog'
 import { ProductCard } from '@/components/product/ProductCard'
 import { useWishlist } from '@/lib/context/wishlist-context'
 import { useCart } from '@/lib/context/cart-context'
@@ -20,15 +20,16 @@ import { formatPrice } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 
 export default function WishlistPage() {
+  const { products } = useProducts()
   const [allAdded, setAllAdded] = useState(false)
   const { wishlistIds, toggleWishlist } = useWishlist()
   const { addToCart } = useCart()
 
   // Match saved wishlist IDs with actual products
-  const wishlistProducts = PRODUCTS.filter((p) => wishlistIds.includes(p.id))
+  const wishlistProducts = products.filter((p) => wishlistIds.includes(p.id))
 
   // Recommended products if wishlist is empty
-  const recommendedProducts = PRODUCTS.filter((p) => p.isBestseller || p.featured).slice(0, 4)
+  const recommendedProducts = products.filter((p) => p.isBestseller || p.featured).slice(0, 4)
 
   // Total price in FCFA of wishlist items
   const totalPrice = wishlistProducts.reduce((acc, p) => acc + p.price, 0)

@@ -17,12 +17,12 @@ import {
   ChevronRight,
   ArrowLeft,
   ArrowRight,
-  ExternalLink,
   ShoppingBag,
 } from 'lucide-react'
 import { useCart } from '@/lib/context/cart-context'
 import { formatPrice } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/input'
 import { AnimatedCounter } from '@/components/animations/AnimatedCounter'
 
 export default function CheckoutPage() {
@@ -56,6 +56,36 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  const buildWhatsAppMessage = (details: {
+    id: string
+    date: string
+    items: typeof items
+    subtotal: number
+    customer: typeof formData
+  }) => {
+    const { id, customer, items: orderItems, subtotal: total } = details
+    let msg = `🛍️ *NOUVELLE COMMANDE — Jessat Multiservices*\n\n`
+    msg += `📋 *N° Commande :* ${id}\n`
+    msg += `🕐 *Date :* ${details.date}\n\n`
+    msg += `👤 *Client :*\n`
+    msg += `• Nom : ${customer.prenom} ${customer.nom}\n`
+    msg += `• Téléphone : ${customer.telephone}\n`
+    msg += `• Email : ${customer.email || 'Non renseigné'}\n`
+    msg += `• Adresse : ${customer.adresse}, ${customer.ville}, ${customer.pays}\n`
+    if (customer.notes) {
+      msg += `• Instructions : ${customer.notes}\n`
+    }
+    msg += `\n💳 *Paiement :* À la livraison\n\n`
+    msg += `📦 *Articles :*\n`
+    orderItems.forEach((item) => {
+      const price = item.customConfigurationTotal ?? item.product.price
+      msg += `• ${item.product.name} x${item.quantity} → ${formatPrice(price * item.quantity)}\n`
+    })
+    msg += `\n💰 *TOTAL : ${formatPrice(total)}*\n`
+    msg += `\n✅ Commande à traiter.`
+    return encodeURIComponent(msg)
+  }
+
   const handleSubmitOrder = (e: React.FormEvent) => {
     e.preventDefault()
     if (items.length === 0) return
@@ -77,39 +107,16 @@ export default function CheckoutPage() {
       customer: { ...formData },
     }
 
+    // ✅ Envoi automatique au +2290159252010 sans action du client
+    const waMsg = buildWhatsAppMessage(details)
+    window.open(`https://wa.me/2290159252010?text=${waMsg}`, '_blank')
+
     setOrderDetails(details)
     setOrderConfirmed(true)
     clearCart()
   }
 
-  // Construct WhatsApp order message
-  const getWhatsAppMessage = () => {
-    if (!orderDetails) return ''
-    const { id, customer, items: orderItems, subtotal: total } = orderDetails
 
-    let msg = `Bonjour *Jessat Multiservices*,\n\n`
-    msg += `Je souhaite confirmer ma commande *N° ${id}*.\n\n`
-    msg += `👤 *Informations Client :*\n`
-    msg += `• Nom complet : ${customer.prenom} ${customer.nom}\n`
-    msg += `• Téléphone : ${customer.telephone}\n`
-    msg += `• Email : ${customer.email || 'Non renseigné'}\n`
-    msg += `• Adresse de livraison : ${customer.adresse}, ${customer.ville}, ${customer.pays}\n`
-    if (customer.notes) {
-      msg += `• Instructions : ${customer.notes}\n`
-    }
-    msg += `\n💳 *Mode de Paiement :* Paiement à la livraison\n\n`
-    msg += `📦 *Articles Commandés :*\n`
-
-    orderItems.forEach((item) => {
-      const price = item.customConfigurationTotal ?? item.product.price
-      msg += `• ${item.product.name} (x${item.quantity}) : ${formatPrice(price * item.quantity)}\n`
-    })
-
-    msg += `\n💰 *Total à payer à la livraison :* ${formatPrice(total)}\n\n`
-    msg += `Merci de me confirmer la prise en charge et la date de livraison !`
-
-    return encodeURIComponent(msg)
-  }
 
   return (
     
@@ -212,16 +219,10 @@ export default function CheckoutPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href={`https://wa.me/22997640758?text=${getWhatsAppMessage()}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all"
-              >
-                <Phone className="w-4 h-4 fill-white" />
-                <span>Confirmer sur WhatsApp (+229 97 64 07 58)</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+              <div className="w-full sm:w-auto px-5 py-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-2.5 text-xs text-emerald-800 font-medium">
+                <Phone className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>Votre commande a été transmise à notre équipe par WhatsApp.</span>
+              </div>
 
               <Link href="/produits" className="w-full sm:w-auto">
                 <Button variant="outline" size="lg" className="w-full text-xs font-semibold">
@@ -272,14 +273,13 @@ export default function CheckoutPage() {
                         <User className="w-3.5 h-3.5 text-zinc-400" />
                         <span>Prénom *</span>
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="prenom"
                         value={formData.prenom}
                         onChange={handleInputChange}
                         required
                         placeholder="Ex: Jean"
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:bg-white focus:border-blue-600 outline-none transition-all"
                       />
                     </div>
 
@@ -288,14 +288,13 @@ export default function CheckoutPage() {
                         <User className="w-3.5 h-3.5 text-zinc-400" />
                         <span>Nom *</span>
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="nom"
                         value={formData.nom}
                         onChange={handleInputChange}
                         required
                         placeholder="Ex: Mensah"
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:bg-white focus:border-blue-600 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -307,14 +306,13 @@ export default function CheckoutPage() {
                         <Mail className="w-3.5 h-3.5 text-zinc-400" />
                         <span>Adresse Email *</span>
                       </label>
-                      <input
+                      <Input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
                         required
                         placeholder="jean.mensah@example.com"
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:bg-white focus:border-blue-600 outline-none transition-all"
                       />
                     </div>
 
@@ -323,14 +321,13 @@ export default function CheckoutPage() {
                         <Phone className="w-3.5 h-3.5 text-zinc-400" />
                         <span>Téléphone / WhatsApp *</span>
                       </label>
-                      <input
+                      <Input
                         type="tel"
                         name="telephone"
                         value={formData.telephone}
                         onChange={handleInputChange}
                         required
                         placeholder="+229 97 00 00 00"
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:bg-white focus:border-blue-600 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -341,14 +338,13 @@ export default function CheckoutPage() {
                       <MapPin className="w-3.5 h-3.5 text-zinc-400" />
                       <span>Adresse exacte de livraison *</span>
                     </label>
-                    <input
+                    <Input
                       type="text"
                       name="adresse"
                       value={formData.adresse}
                       onChange={handleInputChange}
                       required
                       placeholder="Ex: Quartier Zogbadjè, près du carrefour principal"
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:bg-white focus:border-blue-600 outline-none transition-all"
                     />
                   </div>
 
@@ -382,13 +378,12 @@ export default function CheckoutPage() {
                         <Globe className="w-3.5 h-3.5 text-zinc-400" />
                         <span>Pays *</span>
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="pays"
                         value={formData.pays}
                         onChange={handleInputChange}
                         required
-                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:bg-white focus:border-blue-600 outline-none transition-all"
                       />
                     </div>
                   </div>

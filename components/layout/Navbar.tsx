@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Heart, ShoppingBag, Menu, X, Cpu, Sparkles } from 'lucide-react'
+import { Search, Heart, ShoppingBag, Menu, X, User, LogOut, ShieldCheck, ChevronDown } from 'lucide-react'
 import { useCart } from '@/lib/context/cart-context'
 import { useWishlist } from '@/lib/context/wishlist-context'
+import { useAuth } from '@/lib/context/auth-context'
 import { animateBadgePop } from '@/lib/animations/utils'
 import { cn } from '@/lib/utils'
 import { CategoryBar } from '@/components/layout/CategoryBar'
@@ -19,8 +20,11 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+
   const { totalItems, toggleCart, justAddedId } = useCart()
   const { wishlistCount } = useWishlist()
+  const { user, isAuthenticated, logoutCustomer, adminUser, isAdminAuthenticated } = useAuth()
   const badgeRef = React.useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
@@ -70,7 +74,7 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
             <Logo variant="full" href="/" size="md" />
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-2 xl:gap-3 text-sm font-semibold">
+            <nav className="hidden xl:flex items-center gap-1 2xl:gap-2 text-sm font-semibold">
               {navLinks.map((link) => {
                 const active = isLinkActive(link.href)
                 return (
@@ -90,17 +94,17 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
               })}
             </nav>
 
-            {/* Right Actions (Search, Wishlist, Cart) */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Search trigger */}
+            {/* Right Actions (Search, Wishlist, Cart, User Auth) */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Search trigger — icon only up to xl */}
               <button
                 onClick={onOpenSearch}
-                className="flex items-center gap-2 px-3.5 py-2.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-all text-xs sm:text-sm font-medium border border-transparent hover:border-zinc-200"
+                className="flex items-center gap-2 p-2.5 xl:px-3.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-all text-xs sm:text-sm font-medium border border-transparent hover:border-zinc-200"
                 aria-label="Rechercher des configurations"
               >
                 <Search className="w-4 h-4 text-zinc-700" />
-                <span className="hidden sm:inline">Rechercher</span>
-                <kbd className="hidden md:inline-block px-1.5 py-0.5 text-[10px] bg-zinc-100 border border-zinc-200 rounded text-zinc-500">
+                <span className="hidden 2xl:inline">Rechercher</span>
+                <kbd className="hidden 2xl:inline-block px-1.5 py-0.5 text-[10px] bg-zinc-100 border border-zinc-200 rounded text-zinc-500">
                   ⌘K
                 </kbd>
               </button>
@@ -128,7 +132,7 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
               <button
                 onClick={toggleCart}
                 className={cn(
-                  'relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm active:scale-95',
+                  'relative flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm active:scale-95',
                   pathname?.startsWith('/panier') || pathname?.startsWith('/checkout')
                     ? 'bg-blue-600 text-white shadow-blue-500/25 ring-2 ring-blue-600/30'
                     : 'bg-zinc-950 text-white hover:bg-zinc-800'
@@ -145,10 +149,78 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
                 </span>
               </button>
 
+              {/* USER AUTHENTICATION BUTTON & DROPDOWN */}
+              {isAuthenticated && user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-2 rounded-xl border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 transition-all"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="hidden md:inline-block text-xs font-bold text-zinc-800 max-w-[100px] truncate">
+                      {user.name}
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {userDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-zinc-100 p-2 z-50 animate-in fade-in-50 zoom-in-95">
+                      <div className="px-3 py-2.5 border-b border-zinc-100">
+                        <p className="text-xs font-bold text-zinc-900 truncate">{user.name}</p>
+                        <p className="text-[11px] text-zinc-500 truncate">{user.email}</p>
+                      </div>
+                      <div className="py-1">
+                        <Link
+                          href="/profil"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 rounded-lg transition-colors"
+                        >
+                          <User className="w-4 h-4 text-zinc-500" />
+                          <span>Mon Profil</span>
+                        </Link>
+                        {isAdminAuthenticated && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          >
+                            <ShieldCheck className="w-4 h-4" />
+                            <span>Espace Admin</span>
+                          </Link>
+                        )}
+                      </div>
+                      <div className="pt-1 border-t border-zinc-100">
+                        <button
+                          onClick={() => {
+                            logoutCustomer()
+                            setUserDropdownOpen(false)
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors text-left"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Déconnexion</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-indigo-600 bg-indigo-50/80 hover:bg-indigo-100 border border-indigo-200/60 rounded-xl transition-all shadow-xs"
+                >
+                  <User className="w-4 h-4" />
+                  
+                </Link>
+              )}
+
               {/* Mobile menu hamburger */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2.5 text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl"
+                className="xl:hidden p-2.5 text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl"
                 aria-label="Menu mobile"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -159,7 +231,7 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
 
         {/* Mobile Drawer Navigation */}
         {mobileMenuOpen && (
-          <div className="lg:hidden absolute inset-x-0 top-full bg-white border-b border-zinc-200 p-5 shadow-2xl space-y-3 animate-in slide-in-from-top-2 duration-200">
+          <div className="xl:hidden absolute inset-x-0 top-full bg-white border-b border-zinc-200 p-5 shadow-2xl space-y-3 animate-in slide-in-from-top-2 duration-200">
             <nav className="flex flex-col space-y-2">
               {navLinks.map((link) => {
                 const active = isLinkActive(link.href)

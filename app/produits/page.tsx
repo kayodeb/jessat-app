@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { Filter, SlidersHorizontal, ChevronRight, Search, Sparkles } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { useProducts, useCategories } from '@/hooks/useCatalog'
 import { ProductCategory } from '@/types/product'
 import { ProductCard } from '@/components/product/ProductCard'
 
@@ -17,6 +17,13 @@ function CatalogContent() {
   const [selectedCondition, setSelectedCondition] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'price-asc' | 'price-desc' | 'rating'>('rating')
 
+  const { products, isLoading } = useProducts({
+    category: selectedCategory !== 'all' ? selectedCategory : undefined,
+    condition: selectedCondition !== 'all' ? selectedCondition : undefined,
+  })
+
+  const { categories: rawCategories } = useCategories()
+
   useEffect(() => {
     if (categoryParam) {
       setSelectedCategory(categoryParam)
@@ -25,15 +32,10 @@ function CatalogContent() {
 
   const categories = [
     { id: 'all', label: 'Tous les produits' },
-    { id: 'ordinateurs', label: 'Ordinateurs' },
-    { id: 'claviers', label: 'Claviers' },
-    { id: 'souris', label: 'Souris' },
-    { id: 'imprimantes', label: 'Imprimantes' },
-    { id: 'projecteurs', label: 'Projecteurs' },
-    { id: 'accessoires', label: 'Accessoires' },
+    ...rawCategories.map((c) => ({ id: c.slug, label: c.name })),
   ]
 
-  let filtered = [...PRODUCTS]
+  let filtered = [...products]
 
   if (selectedCategory !== 'all') {
     filtered = filtered.filter((p) => p.category === (selectedCategory as ProductCategory))

@@ -11,10 +11,15 @@ export function MainLayoutShell({ children }: { children: React.ReactNode }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const pathname = usePathname()
 
-  const isAdminRoute = pathname?.startsWith('/admin')
+  const isAuthRoute =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === '/inscription' ||
+    pathname === '/connexion' ||
+    pathname?.startsWith('/admin')
 
-  if (isAdminRoute) {
-    return <div className="min-h-screen flex flex-col">{children}</div>
+  if (isAuthRoute) {
+    return <>{children}</>
   }
 
   return (

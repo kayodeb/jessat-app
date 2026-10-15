@@ -4,19 +4,20 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Sparkles, ChevronRight, Percent, Tag, ArrowRight, Filter, Flame } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { useProducts } from '@/hooks/useCatalog'
 import { ProductCard } from '@/components/product/ProductCard'
 import { ProductQuickView } from '@/components/product/ProductQuickView'
 import { Product } from '@/types/product'
 import { cn } from '@/lib/utils'
 
 export default function PromotionsPage() {
+  const { products } = useProducts()
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [selectedCondition, setSelectedCondition] = useState<string>('all')
 
   // Get all products that have a promotion (compareAtPrice > price OR badge === 'Promo')
-  const promoProducts = PRODUCTS.filter((p) => {
+  const promoProducts = products.filter((p) => {
     const hasDiscount = (p.compareAtPrice && p.compareAtPrice > p.price) || p.badge === 'Promo'
     if (!hasDiscount) return false
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { Cpu, ArrowRight, ShieldCheck, Truck, RotateCcw, Headphones, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/input'
 import { Logo } from '@/components/ui/Logo'
 
 export function Footer() {
@@ -141,13 +142,13 @@ export function Footer() {
                 Restez informé de nos arrivages et promotions
               </span>
               <div className="flex gap-2">
-                <input
+                <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="votre.email@domaine.com"
                   required
-                  className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-500 outline-none focus:border-blue-500 transition-colors"
+                  className="flex-1 bg-zinc-900 border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus-visible:border-blue-500 focus-visible:ring-blue-500/20"
                 />
                 <Button type="submit" variant="accent" size="sm" className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white">
                   {subscribed ? (

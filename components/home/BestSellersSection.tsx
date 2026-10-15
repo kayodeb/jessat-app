@@ -1,9 +1,9 @@
-﻿'use client'
+'use client'
 
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { Star, ShoppingBag, Check, ArrowRight, Zap, Cpu } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { useProducts } from '@/hooks/useCatalog'
 import { Product } from '@/types/product'
 import { formatPrice } from '@/lib/utils'
 import { useCart } from '@/lib/context/cart-context'
@@ -17,10 +17,11 @@ interface BestSellersSectionProps {
 
 export function BestSellersSection({ onQuickView }: BestSellersSectionProps) {
   const { addToCart } = useCart()
+  const { products } = useProducts()
   const [addedMap, setAddedMap] = useState<Record<string, boolean>>({})
 
   // Pick bestsellers from products
-  const bestSellers = PRODUCTS.filter((p) => p.isBestseller).slice(0, 3)
+  const bestSellers = products.filter((p) => p.isBestseller).slice(0, 3)
 
   const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation()

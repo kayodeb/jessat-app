@@ -14,9 +14,12 @@ import {
 import { AdminHeader } from '@/components/admin/admin-header'
 import { useAdminStore } from '@/lib/admin-store'
 import { Promotion } from '@/types/admin'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
+import { formatPrice } from '@/lib/utils'
 
 export default function AdminPromotionsPage() {
-  const { promotions, addPromotion, updatePromotion, deletePromotion } =
+  const { promotions, isLoading, addPromotion, updatePromotion, deletePromotion } =
     useAdminStore()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -123,115 +126,134 @@ export default function AdminPromotionsPage() {
         </div>
 
         {/* Promotions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {promotions.map((promo) => (
-            <div
-              key={promo.id}
-              className={`bg-white border rounded-3xl p-6 shadow-sm relative overflow-hidden flex flex-col justify-between transition-all ${
-                promo.isActive
-                  ? 'border-blue-200 shadow-blue-900/5'
-                  : 'border-slate-200 opacity-60'
-              }`}
+        {isLoading && promotions.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-3 bg-white rounded-3xl border border-slate-200/80 p-8">
+            <div className="w-10 h-10 border-4 border-blue-900/20 border-t-blue-900 rounded-full animate-spin" />
+            <p className="text-xs font-semibold text-slate-500">Chargement des promotions...</p>
+          </div>
+        ) : promotions.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-200/80 p-8 text-center">
+            <Tag className="w-10 h-10 text-slate-300 mb-3" />
+            <h3 className="text-sm font-bold text-slate-700">Aucune promotion active</h3>
+            <p className="text-xs text-slate-400 mt-1 mb-4">Créez votre première offre ou code promo pour stimuler les ventes.</p>
+            <button
+              onClick={handleOpenCreate}
+              className="px-4 py-2 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs rounded-2xl flex items-center gap-2"
             >
-              {/* Header Badge */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-base font-black text-blue-900 px-3 py-1 rounded-xl bg-blue-50 border border-blue-200 tracking-wider">
-                    {promo.code}
-                  </span>
-                  <span
-                    className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
-                      promo.isActive
-                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                        : 'bg-slate-100 text-slate-500 border border-slate-200'
-                    }`}
-                  >
-                    {promo.isActive ? (
-                      <>
-                        <CheckCircle2 className="w-3 h-3" /> Active
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="w-3 h-3" /> Inactive
-                      </>
-                    )}
-                  </span>
+              <Plus className="w-3.5 h-3.5" /> Créer une Promotion
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {promotions.map((promo) => (
+              <div
+                key={promo.id}
+                className={`bg-white border rounded-3xl p-6 shadow-sm relative overflow-hidden flex flex-col justify-between transition-all ${
+                  promo.isActive
+                    ? 'border-blue-200 shadow-blue-900/5'
+                    : 'border-slate-200 opacity-60'
+                }`}
+              >
+                {/* Header Badge */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-base font-black text-blue-900 px-3 py-1 rounded-xl bg-blue-50 border border-blue-200 tracking-wider">
+                      {promo.code}
+                    </span>
+                    <span
+                      className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
+                        promo.isActive
+                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                          : 'bg-slate-100 text-slate-500 border border-slate-200'
+                      }`}
+                    >
+                      {promo.isActive ? (
+                        <>
+                          <CheckCircle2 className="w-3 h-3" /> Active
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-3 h-3" /> Inactive
+                        </>
+                      )}
+                    </span>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-2xl font-black text-slate-900">
+                      {promo.discountType === 'percentage'
+                        ? `-${promo.discountValue}%`
+                        : `-${formatPrice(promo.discountValue)}`}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="text-right">
-                  <span className="text-2xl font-black text-slate-900">
-                    {promo.discountType === 'percentage'
-                      ? `-${promo.discountValue}%`
-                      : `-${promo.discountValue} €`}
+                {/* Description */}
+                <p className="text-xs text-slate-600 font-medium mt-4 mb-4">
+                  {promo.description}
+                </p>
+
+                {/* Details */}
+                <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200/60 text-[11px]">
+                  <div>
+                    <span className="text-slate-400 block font-semibold">Période de validité</span>
+                    <span className="text-slate-800 font-bold flex items-center gap-1 mt-0.5">
+                      <Calendar className="w-3 h-3 text-blue-900" />
+                      {promo.startDate} au {promo.endDate}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-slate-400 block font-semibold">Utilisations</span>
+                    <span className="text-slate-800 font-bold mt-0.5 block">
+                      {promo.usageCount} / {promo.usageLimit} réclamées
+                    </span>
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs">
+                  <span className="text-slate-500 font-medium">
+                    {promo.minPurchase > 0
+                      ? `Achat min : ${formatPrice(promo.minPurchase)}`
+                      : 'Sans minimum d\'achat'}
                   </span>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        updatePromotion(promo.id, { isActive: !promo.isActive })
+                      }
+                      className={`px-3 py-1 rounded-xl font-bold text-[11px] transition-colors ${
+                        promo.isActive
+                          ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                          : 'bg-purple-100 text-purple-700'
+                      }`}
+                    >
+                      {promo.isActive ? 'Désactiver' : 'Activer'}
+                    </button>
+
+                    <button
+                      onClick={() => handleOpenEdit(promo)}
+                      className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-purple-600"
+                      title="Modifier"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      onClick={() => deletePromotion(promo.id)}
+                      className="p-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              {/* Description */}
-              <p className="text-xs text-slate-600 font-medium mt-4 mb-4">
-                {promo.description}
-              </p>
-
-              {/* Details */}
-              <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200/60 text-[11px]">
-                <div>
-                  <span className="text-slate-400 block font-semibold">Période de validité</span>
-                  <span className="text-slate-800 font-bold flex items-center gap-1 mt-0.5">
-                    <Calendar className="w-3 h-3 text-blue-900" />
-                    {promo.startDate} au {promo.endDate}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-slate-400 block font-semibold">Utilisations</span>
-                  <span className="text-slate-800 font-bold mt-0.5 block">
-                    {promo.usageCount} / {promo.usageLimit} réclamées
-                  </span>
-                </div>
-              </div>
-
-              {/* Footer Actions */}
-              <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs">
-                <span className="text-slate-500 font-medium">
-                  {promo.minPurchase > 0
-                    ? `Achat min : ${promo.minPurchase} €`
-                    : 'Sans minimum d\'achat'}
-                </span>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() =>
-                      updatePromotion(promo.id, { isActive: !promo.isActive })
-                    }
-                    className={`px-3 py-1 rounded-xl font-bold text-[11px] transition-colors ${
-                      promo.isActive
-                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                        : 'bg-purple-100 text-purple-700'
-                    }`}
-                  >
-                    {promo.isActive ? 'Désactiver' : 'Activer'}
-                  </button>
-
-                  <button
-                    onClick={() => handleOpenEdit(promo)}
-                    className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-purple-600"
-                    title="Modifier"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    onClick={() => deletePromotion(promo.id)}
-                    className="p-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600"
-                    title="Supprimer"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Modal Form */}
         {isModalOpen && (
@@ -255,13 +277,13 @@ export default function AdminPromotionsPage() {
                     <label className="block font-bold text-slate-700 mb-1">
                       Code Promo *
                     </label>
-                    <input
+                    <Input
                       type="text"
                       required
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                       placeholder="ex: SUMMER20"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 font-mono font-bold uppercase focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                      className="font-mono font-bold uppercase"
                     />
                   </div>
 
@@ -272,10 +294,10 @@ export default function AdminPromotionsPage() {
                     <select
                       value={discountType}
                       onChange={(e) => setDiscountType(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                      className="w-full bg-white border border-zinc-200 rounded-xl px-3.5 py-2 text-zinc-900 focus-visible:outline-none focus-visible:border-zinc-900 text-xs"
                     >
                       <option value="percentage">Pourcentage (%)</option>
-                      <option value="fixed">Montant Fixe (€)</option>
+                      <option value="fixed">Montant Fixe (FCFA)</option>
                     </select>
                   </div>
                 </div>
@@ -284,13 +306,13 @@ export default function AdminPromotionsPage() {
                   <label className="block font-bold text-slate-700 mb-1">
                     Valeur de la Réduction *
                   </label>
-                  <input
+                  <Input
                     type="number"
                     required
                     min="1"
                     value={discountValue}
                     onChange={(e) => setDiscountValue(Number(e.target.value))}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                    className="font-bold"
                   />
                 </div>
 
@@ -298,13 +320,12 @@ export default function AdminPromotionsPage() {
                   <label className="block font-bold text-slate-700 mb-1">
                     Description d'offre *
                   </label>
-                  <input
+                  <Input
                     type="text"
                     required
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="ex: 15% de réduction à partir de 100€ d'achat"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                    placeholder="ex: 10% de réduction à partir de 50 000 FCFA d'achat"
                   />
                 </div>
 
@@ -313,11 +334,10 @@ export default function AdminPromotionsPage() {
                     <label className="block font-bold text-slate-700 mb-1">
                       Date de début
                     </label>
-                    <input
+                    <Input
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 focus:outline-none"
                     />
                   </div>
 
@@ -325,11 +345,10 @@ export default function AdminPromotionsPage() {
                     <label className="block font-bold text-slate-700 mb-1">
                       Date de fin
                     </label>
-                    <input
+                    <Input
                       type="date"
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -337,14 +356,13 @@ export default function AdminPromotionsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block font-bold text-slate-700 mb-1">
-                      Achat minimum (€)
+                      Achat minimum (FCFA)
                     </label>
-                    <input
+                    <Input
                       type="number"
                       min="0"
                       value={minPurchase}
                       onChange={(e) => setMinPurchase(Number(e.target.value))}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 focus:outline-none"
                     />
                   </div>
 
@@ -352,25 +370,22 @@ export default function AdminPromotionsPage() {
                     <label className="block font-bold text-slate-700 mb-1">
                       Limite d'utilisations
                     </label>
-                    <input
+                    <Input
                       type="number"
                       min="1"
                       value={usageLimit}
                       onChange={(e) => setUsageLimit(Number(e.target.value))}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-slate-900 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 pt-2">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     id="isActive"
                     checked={isActive}
-                    onChange={(e) => setIsActive(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500 bg-slate-50"
+                    onCheckedChange={(checked) => setIsActive(checked)}
                   />
-                  <label htmlFor="isActive" className="text-slate-700 font-semibold">
+                  <label htmlFor="isActive" className="text-slate-700 font-semibold cursor-pointer">
                     Activer immédiatement cette promotion
                   </label>
                 </div>

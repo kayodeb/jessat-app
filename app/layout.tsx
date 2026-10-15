@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import { AuthProvider } from '@/lib/context/auth-context'
 import { CartProvider } from '@/lib/context/cart-context'
 import { WishlistProvider } from '@/lib/context/wishlist-context'
 import { MainLayoutShell } from '@/components/layout/MainLayoutShell'
@@ -56,11 +57,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-[#fafafa] text-zinc-950">
-        <CartProvider>
-          <WishlistProvider>
-            <MainLayoutShell>{children}</MainLayoutShell>
-          </WishlistProvider>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <MainLayoutShell>{children}</MainLayoutShell>
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   )

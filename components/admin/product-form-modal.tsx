@@ -4,6 +4,8 @@ import { useState, useEffect, FormEvent } from 'react'
 import { X, Plus, Trash2 } from 'lucide-react'
 import { Product, ProductCategory } from '@/types/product'
 import { CategoryItem } from '@/types/category'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface ProductFormModalProps {
   isOpen: boolean
@@ -175,24 +177,22 @@ export function ProductFormModal({
               <label className="block font-bold text-slate-700 mb-1">
                 Nom du Produit *
               </label>
-              <input
+              <Input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="ex: Aero Apex One Extreme"
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
               />
             </div>
 
             <div>
               <label className="block font-bold text-slate-700 mb-1">Marque</label>
-              <input
+              <Input
                 type="text"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
                 placeholder="ex: AERO RIGS"
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
               />
             </div>
           </div>
@@ -200,33 +200,33 @@ export function ProductFormModal({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block font-bold text-slate-700 mb-1">
-                Prix (€) *
+                Prix (FCFA) *
               </label>
-              <input
+              <Input
                 type="number"
                 required
                 min="0"
-                step="0.01"
-                value={price}
+                step="1"
+                value={price || ''}
                 onChange={(e) => setPrice(Number(e.target.value))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-bold"
+                placeholder="ex: 450000"
+                className="font-bold"
               />
             </div>
 
             <div>
               <label className="block font-bold text-slate-700 mb-1">
-                Prix d'origine (€)
+                Prix d'origine (FCFA)
               </label>
-              <input
+              <Input
                 type="number"
                 min="0"
-                step="0.01"
+                step="1"
                 value={compareAtPrice || ''}
                 onChange={(e) =>
                   setCompareAtPrice(e.target.value ? Number(e.target.value) : undefined)
                 }
-                placeholder="ex: 4299"
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
+                placeholder="ex: 500000"
               />
             </div>
 
@@ -234,13 +234,13 @@ export function ProductFormModal({
               <label className="block font-bold text-slate-700 mb-1">
                 Quantité en Stock *
               </label>
-              <input
+              <Input
                 type="number"
                 required
                 min="0"
                 value={stockCount}
                 onChange={(e) => setStockCount(Number(e.target.value))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-bold"
+                className="font-bold"
               />
             </div>
           </div>
@@ -291,12 +291,11 @@ export function ProductFormModal({
 
           <div>
             <label className="block font-bold text-slate-700 mb-1">Slogan (Tagline)</label>
-            <input
+            <Input
               type="text"
               value={tagline}
               onChange={(e) => setTagline(e.target.value)}
               placeholder="ex: L'apogée de l'architecture gaming 4K"
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             />
           </div>
 
@@ -307,7 +306,7 @@ export function ProductFormModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description complète du produit..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"
+              className="w-full bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-zinc-900 focus-visible:outline-none focus-visible:border-zinc-900 focus-visible:ring-2 focus-visible:ring-zinc-950/20 resize-none text-xs"
             />
           </div>
 
@@ -317,42 +316,42 @@ export function ProductFormModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-slate-500 block mb-1">Processeur (CPU)</label>
-                <input
+                <Input
                   type="text"
                   value={cpu}
                   onChange={(e) => setCpu(e.target.value)}
                   placeholder="ex: Ryzen 7 9800X3D"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-slate-800"
+                  className="bg-white"
                 />
               </div>
               <div>
                 <label className="text-slate-500 block mb-1">Carte Graphique (GPU)</label>
-                <input
+                <Input
                   type="text"
                   value={gpu}
                   onChange={(e) => setGpu(e.target.value)}
                   placeholder="ex: RTX 5090 24GB"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-slate-800"
+                  className="bg-white"
                 />
               </div>
               <div>
                 <label className="text-slate-500 block mb-1">RAM</label>
-                <input
+                <Input
                   type="text"
                   value={ram}
                   onChange={(e) => setRam(e.target.value)}
                   placeholder="ex: 64 Go DDR5 6000MHz"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-slate-800"
+                  className="bg-white"
                 />
               </div>
               <div>
                 <label className="text-slate-500 block mb-1">Stockage</label>
-                <input
+                <Input
                   type="text"
                   value={storage}
                   onChange={(e) => setStorage(e.target.value)}
                   placeholder="ex: 2 To SSD NVMe PCIe 5.0"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-slate-800"
+                  className="bg-white"
                 />
               </div>
             </div>
@@ -364,12 +363,12 @@ export function ProductFormModal({
               Images du produit (URLs)
             </label>
             <div className="flex gap-2 mb-3">
-              <input
+              <Input
                 type="text"
                 value={imageUrlInput}
                 onChange={(e) => setImageUrlInput(e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none"
+                className="flex-1 bg-white"
               />
               <button
                 type="button"
@@ -405,14 +404,12 @@ export function ProductFormModal({
 
           {/* Featured checkbox */}
           <div className="flex items-center gap-2 pt-2">
-            <input
-              type="checkbox"
+            <Checkbox
               id="featured"
               checked={featured}
-              onChange={(e) => setFeatured(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 bg-slate-50"
+              onCheckedChange={(checked) => setFeatured(checked)}
             />
-            <label htmlFor="featured" className="text-slate-700 font-semibold">
+            <label htmlFor="featured" className="text-slate-700 font-semibold cursor-pointer">
               Mettre en avant ce produit sur la page d'accueil (Featured)
             </label>
           </div>

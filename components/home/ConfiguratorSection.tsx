@@ -3,7 +3,8 @@
 import React, { useState, useMemo } from 'react'
 import Image from 'next/image'
 import { Cpu, Zap, HardDrive, Layers, ShieldCheck, Check, ShoppingBag, Sparkles, SlidersHorizontal, ArrowRight } from 'lucide-react'
-import { CONFIGURATOR_CATEGORIES, CONFIGURATOR_OPTIONS } from '@/data/configurator'
+import { CONFIGURATOR_CATEGORIES } from '@/data/configurator'
+import { useConfiguratorOptions } from '@/hooks/useCatalog'
 import { ConfigCategory, ConfigOption } from '@/types/configurator'
 import { formatPrice, cn } from '@/lib/utils'
 import { useCart } from '@/lib/context/cart-context'
@@ -13,16 +14,17 @@ import { Reveal } from '@/components/animations/Reveal'
 
 export function ConfiguratorSection() {
   const { addToCart } = useCart()
+  const { options: CONFIGURATOR_OPTIONS } = useConfiguratorOptions()
   const basePrice = 1499
 
   // Selected options state
   const [activeTab, setActiveTab] = useState<ConfigCategory>('cpu')
-  const [selectedCpu, setSelectedCpu] = useState<ConfigOption>(CONFIGURATOR_OPTIONS.cpu[0])
-  const [selectedGpu, setSelectedGpu] = useState<ConfigOption>(CONFIGURATOR_OPTIONS.gpu[0])
-  const [selectedRam, setSelectedRam] = useState<ConfigOption>(CONFIGURATOR_OPTIONS.ram[0])
-  const [selectedStorage, setSelectedStorage] = useState<ConfigOption>(CONFIGURATOR_OPTIONS.storage[0])
-  const [selectedCooling, setSelectedCooling] = useState<ConfigOption>(CONFIGURATOR_OPTIONS.cooling[0])
-  const [selectedChassis, setSelectedChassis] = useState<ConfigOption>(CONFIGURATOR_OPTIONS.chassis[0])
+  const [selectedCpu, setSelectedCpu] = useState<ConfigOption>(() => CONFIGURATOR_OPTIONS.cpu[0])
+  const [selectedGpu, setSelectedGpu] = useState<ConfigOption>(() => CONFIGURATOR_OPTIONS.gpu[0])
+  const [selectedRam, setSelectedRam] = useState<ConfigOption>(() => CONFIGURATOR_OPTIONS.ram[0])
+  const [selectedStorage, setSelectedStorage] = useState<ConfigOption>(() => CONFIGURATOR_OPTIONS.storage[0])
+  const [selectedCooling, setSelectedCooling] = useState<ConfigOption>(() => CONFIGURATOR_OPTIONS.cooling[0])
+  const [selectedChassis, setSelectedChassis] = useState<ConfigOption>(() => CONFIGURATOR_OPTIONS.chassis[0])
   const [isAdded, setIsAdded] = useState(false)
 
   // Calculate total price dynamically

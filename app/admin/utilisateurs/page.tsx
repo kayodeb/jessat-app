@@ -13,9 +13,11 @@ import {
 import { AdminHeader } from '@/components/admin/admin-header'
 import { useAdminStore } from '@/lib/admin-store'
 import { AdminUser, UserRole } from '@/types/admin'
+import { Input } from '@/components/ui/input'
+import { formatPrice } from '@/lib/utils'
 
 export default function AdminUsersPage() {
-  const { users, updateUserRole, toggleUserStatus, addUser } = useAdminStore()
+  const { users, isLoading, updateUserRole, toggleUserStatus, addUser } = useAdminStore()
 
   const [searchQuery, setSearchQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState<'ALL' | UserRole>('ALL')
@@ -62,12 +64,12 @@ export default function AdminUsersPage() {
             {/* Search */}
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
+              <Input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher par nom ou email..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-900/20"
+                className="w-full bg-slate-50 border-slate-200 rounded-2xl pl-10 pr-4 py-2 text-xs text-slate-800"
               />
             </div>
 
@@ -109,7 +111,23 @@ export default function AdminUsersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredUsers.map((u) => (
+                {isLoading && users.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-20 text-center text-slate-500 text-xs">
+                      <div className="flex flex-col items-center justify-center gap-2.5">
+                        <div className="w-8 h-8 border-3 border-blue-900/20 border-t-blue-900 rounded-full animate-spin" />
+                        <span className="font-semibold text-slate-500">Chargement des utilisateurs...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-16 text-center text-slate-400 text-xs">
+                      Aucun utilisateur trouvé.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
                     {/* User info */}
                     <td className="py-3.5 px-6">
@@ -169,7 +187,7 @@ export default function AdminUsersPage() {
                       {u.ordersCount !== undefined ? (
                         <span>
                           <strong className="text-slate-900">{u.ordersCount}</strong> commandes (
-                          {u.totalSpent ? `${u.totalSpent} €` : '0 €'})
+                          {u.totalSpent ? formatPrice(u.totalSpent) : '0 FCFA'})
                         </span>
                       ) : (
                         <span className="text-slate-400">—</span>
@@ -220,7 +238,8 @@ export default function AdminUsersPage() {
                       )}
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
               </tbody>
             </table>
           </div>
@@ -248,13 +267,12 @@ export default function AdminUsersPage() {
                   <label className="block font-bold text-slate-700 mb-1">
                     Nom Complet *
                   </label>
-                  <input
+                  <Input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="ex: Jean Valjean"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
 
@@ -262,13 +280,12 @@ export default function AdminUsersPage() {
                   <label className="block font-bold text-slate-700 mb-1">
                     Adresse Email *
                   </label>
-                  <input
+                  <Input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="ex: jean@jessat.com"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
 

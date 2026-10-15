@@ -22,7 +22,7 @@ import {
   CheckCircle2,
   Sliders,
 } from 'lucide-react'
-import { PRODUCTS } from '@/data/products'
+import { useProduct, useProducts } from '@/hooks/useCatalog'
 import { formatPrice, cn } from '@/lib/utils'
 import { useCart } from '@/lib/context/cart-context'
 import { useWishlist } from '@/lib/context/wishlist-context'
@@ -38,7 +38,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const resolvedParams = use(params)
   const { slug } = resolvedParams
 
-  const product = PRODUCTS.find((p) => p.slug === slug)
+  const { product, isLoading } = useProduct(slug)
+  const { products: allProducts } = useProducts()
 
   const { addToCart } = useCart()
   const { toggleWishlist, isInWishlist } = useWishlist()
@@ -48,8 +49,17 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const [isAdded, setIsAdded] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
 
-  if (!product) {
+  if (!product && !isLoading) {
     notFound()
+  }
+
+  if (!product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+        <p className="text-zinc-500 text-sm">Chargement du produit...</p>
+      </div>
+    )
   }
 
   const isFavorite = isInWishlist(product.id)
@@ -69,7 +79,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   }
 
   // Related products
-  const relatedProducts = PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4)
+  const relatedProducts = allProducts.filter((p) => p.id !== product.id).slice(0, 4)
 
   const savings = product.compareAtPrice ? product.compareAtPrice - product.price : 0
 

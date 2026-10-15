@@ -15,6 +15,7 @@ import { AdminHeader } from '@/components/admin/admin-header'
 import { useAdminStore } from '@/lib/admin-store'
 import { ProductFormModal } from '@/components/admin/product-form-modal'
 import { Product } from '@/types/product'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableHeader,
@@ -33,9 +34,10 @@ import {
 } from '@/components/ui/pagination'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { formatPrice } from '@/lib/utils'
 
 export default function AdminProductsPage() {
-  const { products, categories, addProduct, updateProduct, deleteProduct } =
+  const { products, categories, isLoading, addProduct, updateProduct, deleteProduct } =
     useAdminStore()
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -121,12 +123,12 @@ export default function AdminProductsPage() {
           {/* Search Input */}
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Rechercher par nom, marque, slug..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-900/20"
+              className="w-full bg-slate-50 border-slate-200 rounded-2xl pl-10 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400"
             />
           </div>
 
@@ -199,7 +201,16 @@ export default function AdminProductsPage() {
               </TableHeader>
 
               <TableBody>
-                {paginatedProducts.length === 0 ? (
+                {isLoading && products.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="py-20 text-center text-slate-500 text-xs">
+                      <div className="flex flex-col items-center justify-center gap-2.5">
+                        <div className="w-8 h-8 border-3 border-blue-900/20 border-t-blue-900 rounded-full animate-spin" />
+                        <span className="font-semibold text-slate-500">Chargement des produits...</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : paginatedProducts.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="py-16 text-center text-slate-400 text-xs">
                       Aucun produit ne correspond à votre recherche.
@@ -243,10 +254,10 @@ export default function AdminProductsPage() {
 
                         {/* Prix */}
                         <TableCell className="py-3 px-4 font-black text-slate-900">
-                          {product.price.toLocaleString('fr-FR')} €
+                          {formatPrice(product.price)}
                           {product.compareAtPrice && (
                             <span className="block text-[10px] text-slate-400 line-through font-normal">
-                              {product.compareAtPrice} €
+                              {formatPrice(product.compareAtPrice)}
                             </span>
                           )}
                         </TableCell>
